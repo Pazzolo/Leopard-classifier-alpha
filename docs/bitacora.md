@@ -16,6 +16,27 @@ Registro cronológico de lo que se hizo en el proyecto: qué salió bien, qué s
 
 ---
 
+## 2026-11-17 — Verificación por píxeles: las 4 versiones son las mismas fotos
+
+**Hecho:** se compararon los píxeles de **todas** las fotos emparejadas (mismo número y especie) entre las 4 versiones, usando miniaturas de 32×32 en escala de grises y correlación. Se tomaron 200 pares al azar como referencia.
+
+| Par de versiones | Pares | Corr. media | Pares < 0.9 | Corr. al azar |
+| --- | --- | --- | --- | --- |
+| v2 vs v3 | 849 | 0.972 | 3 | 0.075 |
+| v2 vs v4 | 849 | 0.994 | 0 | 0.027 |
+| v2 vs segmentada | 800 | 0.987 | 0 | 0.050 |
+| v3 vs v4 | 850 | 0.977 | 0 | 0.078 |
+| v3 vs segmentada | 799 | 0.952 | 44 | 0.036 |
+| v4 vs segmentada | 799 | 0.992 | 0 | 0.051 |
+
+**✅ Bien:** queda confirmado para todo el dataset, no solo para la foto #100. Los pares "bajos" (0.87–0.90) involucran a v3, que tiene menor resolución (150×150); aun así están muy por encima del azar.
+
+**❌ Hallazgo:** la "segmentada" correlaciona 0.99 con v2, así que en la práctica el fondo **no** está removido. No aporta información distinta a v4.
+
+**🧭 Decisiones:** se mantiene: no mezclar versiones sin agrupar por foto.
+
+---
+
 ## 2026-11-17 — ¿Mezclar todos los zips? Las versiones son las mismas fotos
 
 **Hecho:** se evaluó la idea de mezclar los 4 datasets y entrenar con todo.

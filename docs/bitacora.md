@@ -16,9 +16,23 @@ Registro cronológico de lo que se hizo en el proyecto: qué salió bien, qué s
 
 ---
 
+## 2026-11-17 — Estimación de tiempo de cómputo
+
+**Hecho:** se agregó la §13 *Costo computacional estimado* a [decisiones-plan-a.md](decisiones-plan-a.md), con una diapositiva nueva en el esquema (ahora 16).
+
+**❌ Problema detectado:** tal como está escrito, el Plan A tardaría **~3–5 horas** en Colab gratuito, casi todo en la búsqueda de hiperparámetros del Random Forest (3.600 entrenamientos). Hay riesgo de que la sesión se desconecte.
+
+**🧭 Decisiones:** se proponen ajustes para bajar a ~1 hora: `RandomizedSearchCV` y CV 5×2 solo para la búsqueda del RF, quitar `max_features=0.1` y guardar en Drive después de cada paso. La comparación final se mantiene en 10×10.
+
+**⏭️ Pendiente:**
+- Confirmar los ajustes con el grupo y, si se aprueban, actualizar [plan-a.md](plan-a.md) y la §10 de decisiones.
+- Medir tiempos reales en la fase 0 (cronometrar un entrenamiento de RF).
+
+---
+
 ## 2026-11-17 — Documento de decisiones para la presentación
 
-**Hecho:** se creó [decisiones-plan-a.md](decisiones-plan-a.md): cada decisión del Plan A con qué, por qué, alternativas descartadas, un mensaje clave para la diapositiva y preguntas probables de la defensa. Incluye un esquema de 15 diapositivas y referencias en IEEE.
+**Hecho:** se creó [decisiones-plan-a.md](decisiones-plan-a.md): cada decisión del Plan A con qué, por qué, alternativas descartadas, un mensaje clave para la diapositiva y preguntas probables de la defensa. Incluye un esquema de diapositivas y referencias en IEEE.
 
 **🧭 Decisiones:** el documento está en español y separado de `plan-a.md`. El plan es la lista de tareas; este archivo es la justificación que se presenta.
 

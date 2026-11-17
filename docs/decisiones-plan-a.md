@@ -215,14 +215,49 @@ foto (224×224, normalizada con media/std de ImageNet) → ResNet50 → vector d
 
 ---
 
-## 13. Riesgos y plan B
+## 13. Costo computacional estimado
+
+Estimación previa para **Colab gratuito** (2 núcleos de CPU + GPU T4). Son números aproximados, sin medir todavía; pueden variar ×2 en cualquier dirección. Se reemplazarán por tiempos reales al correr la notebook.
+
+| Paso | Trabajo | Tiempo estimado |
+| --- | --- | --- |
+| Descomprimir y cargar 850 imágenes | — | < 1 min |
+| Extracción de features con ResNet50 | 850 imágenes, una sola vez, en GPU | ~1 min (5–10 min solo con CPU) |
+| **Búsqueda de hiperparámetros SVM** | 42 combinaciones × 100 folds = 4.200 entrenamientos | **~5–15 min** |
+| **Búsqueda de hiperparámetros RF** | 36 combinaciones × 100 folds = 3.600 entrenamientos | **~2–4 horas** ⚠️ |
+| Curvas de aprendizaje (ambos modelos) | ~500 entrenamientos c/u | ~15–30 min (sobre todo RF) |
+| Comparación estadística | 100 folds por modelo + probabilidades | ~10–15 min |
+| Evaluación final en test | 2 entrenamientos | < 1 min |
+| t-SNE (3 perplexities + píxeles crudos) | 850 puntos | ~1–2 min |
+| Optuna (extra) | Límite de tiempo fijado por nosotros | ~10 min |
+| **Total con el plan tal como está** | | **≈ 3–5 horas** |
+
+**El cuello de botella es el Random Forest:** cada entrenamiento construye cientos de árboles sobre 2048 características, y la búsqueda lo repite 3.600 veces. Además, una sesión tan larga en Colab gratuito corre el riesgo de desconectarse.
+
+**Ajustes propuestos para bajar el total a ~1 hora:**
+- **Búsqueda aleatoria para RF:** `RandomizedSearchCV` con ~12 combinaciones en vez de las 36 (~3× más rápido).
+- **CV más liviano solo para la búsqueda del RF:** 5×2 (lo permite la rúbrica, justificándolo). Se mantiene el **10×10 completo para la comparación final**, que es donde el test de Wilcoxon lo necesita.
+- **Quitar `max_features=0.1`**, la opción más lenta.
+- **Guardar resultados en Drive después de cada paso**, para no perder trabajo si Colab se desconecta.
+- La búsqueda del SVM queda igual (es barata).
+
+> **Estado:** propuesta pendiente de confirmar con el grupo. Si se adopta, actualizar §10 y [plan-a.md](plan-a.md).
+
+> **Mensaje clave:** gracias a extraer los features una sola vez, todo el experimento cabe en ~1 hora de Colab. El único paso caro es la búsqueda del Random Forest, y se aligera sin tocar la comparación estadística.
+
+**Pregunta probable:** *¿Usar un CV distinto para la búsqueda del RF no hace injusta la comparación?*
+→ No. La búsqueda solo elige los hiperparámetros. La comparación entre SVM y RF se hace después, con el **mismo** CV 10×10 para ambos modelos.
+
+---
+
+## 14. Riesgos y plan B
 
 | Riesgo | Respuesta |
 | --- | --- |
 | Test pequeño → métricas ruidosas | Conclusiones basadas en el CV (100 scores) |
 | Especies muy parecidas | Esperado; se analiza con la matriz de confusión y el t-SNE |
 | Rendimiento bajo | Plan B: otro backbone (EfficientNet, DINOv2) o el dataset segmentado |
-| Costo computacional | Reducir el grid o bajar a CV 2×5 (permitido por la rúbrica) |
+| Costo computacional (~3–5 h con el plan original) | Ajustes de la §13 → ~1 h |
 
 ---
 
@@ -241,9 +276,10 @@ foto (224×224, normalizada con media/std de ImageNet) → ResNet50 → vector d
 10. **Comparación estadística:** boxplot + Wilcoxon → §11
 11. **Resultados en test:** matriz de confusión, ROC → §12
 12. **t-SNE** → §12
-13. **Conclusiones**
-14. **Limitaciones y trabajo futuro** → §11 (limitación), §13
-15. **Referencias**
+13. **Costo computacional:** tabla de tiempos (reales, una vez medidos) → §13
+14. **Conclusiones**
+15. **Limitaciones y trabajo futuro** → §11 (limitación), §14
+16. **Referencias**
 
 ---
 

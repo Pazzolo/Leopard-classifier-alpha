@@ -16,6 +16,16 @@ Registro cronológico de lo que se hizo en el proyecto: qué salió bien, qué s
 
 ---
 
+## 2026-11-17 — Documento de decisiones para la presentación
+
+**Hecho:** se creó [decisiones-plan-a.md](decisiones-plan-a.md): cada decisión del Plan A con qué, por qué, alternativas descartadas, un mensaje clave para la diapositiva y preguntas probables de la defensa. Incluye un esquema de 15 diapositivas y referencias en IEEE.
+
+**🧭 Decisiones:** el documento está en español y separado de `plan-a.md`. El plan es la lista de tareas; este archivo es la justificación que se presenta.
+
+**⏭️ Pendiente:** armar el PowerPoint cuando haya resultados (las diapositivas 4 y 9–13 dependen de la notebook).
+
+---
+
 ## 2026-11-17 — Plan A sobre el dataset v2
 
 **Hecho:** se escribió [plan-a.md](plan-a.md): ResNet50 preentrenada → embeddings → SVM (RBF) vs. Random Forest, CV 10×10, Wilcoxon, t-SNE. Incluye fases con checklists, decisiones justificadas, riesgos y un plan B.

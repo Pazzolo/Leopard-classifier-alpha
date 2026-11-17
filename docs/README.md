@@ -9,6 +9,7 @@
 | [00-proyecto.md](00-proyecto.md) | Enunciado general, reglas de entrega y defensa, datasets disponibles |
 | [01-rubrica.md](01-rubrica.md) | Criterios de evaluación y fórmula de nota |
 | [plan-a.md](plan-a.md) | **Plan A:** transfer learning (ResNet50) + SVM vs. Random Forest sobre el dataset v2 |
+| [decisiones-plan-a.md](decisiones-plan-a.md) | Decisiones del Plan A explicadas (qué, por qué, alternativas): base para la presentación |
 | [bitacora.md](bitacora.md) | Bitácora del capitán: qué se hizo, qué salió bien o mal, decisiones |
 | [items/](items/) | Un archivo por ítem evaluado (requisito + checklist + notas) |
 

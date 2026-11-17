@@ -10,3 +10,7 @@ __pycache__/
 .ipynb_checkpoints/
 .venv/
 venv/
+
+# Datos descomprimidos y salidas regenerables
+data/
+outputs/embeddings/

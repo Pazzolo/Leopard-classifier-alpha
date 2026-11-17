@@ -219,6 +219,8 @@ foto (224×224, normalizada con media/std de ImageNet) → ResNet50 → vector d
 
 ## 13. Costo computacional estimado
 
+> **Actualización (tiempos reales en local, Mac M3 Pro, 11 núcleos):** notebook hasta la extracción completa en **35 s** (embeddings ResNet50 en 8.8 s en la GPU del Mac). Un RF de 500 árboles tarda 2.3 s (`sqrt`) y 8.7 s (`max_features=0.1`) por núcleo; un SVM, 0.2 s. Con 11 núcleos, el grid completo del RF (3.600 entrenamientos) queda en **~15–25 min**, así que en local **no hace falta aligerarlo**. Los recortes de abajo solo serían necesarios en Colab gratuito (2 núcleos).
+
 Estimación previa para **Colab gratuito** (2 núcleos de CPU + GPU T4). Son números aproximados, sin medir todavía; pueden variar ×2 en cualquier dirección. Se reemplazarán por tiempos reales al correr la notebook.
 
 | Paso | Trabajo | Tiempo estimado |

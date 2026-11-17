@@ -16,6 +16,32 @@ Registro cronológico de lo que se hizo en el proyecto: qué salió bien, qué s
 
 ---
 
+## 2026-11-17 — Entorno local y fases 0–2 de la notebook
+
+**Hecho:**
+- Entorno local: `uv` (Homebrew) + `.venv` con Python 3.12.16, torch 2.15 (GPU del Mac vía MPS), scikit-learn 1.9.1, optuna, open_clip. Dependencias en `requirements.txt`; kernel de Jupyter `leopard`.
+- [notebooks/clasificador_felideos.ipynb](../notebooks/clasificador_felideos.ipynb): setup (corre en local y en Colab), carga de datos, EDA completo, extracción ResNet50 y justificación de omitir feature selection. Ejecutada entera en local.
+- Figuras del EDA en `outputs/figures/` (para la presentación). Embeddings en `outputs/embeddings/` (ignorados por git, se regeneran).
+
+**✅ Bien:**
+- Notebook completa en **35 s**; embeddings ResNet50 de 850 fotos en **8.8 s** (GPU MPS).
+- Chequeo rápido sin optimizar (5-fold sobre desarrollo): SVM F1 macro **0.684 ± 0.049**, RF(300) **0.694 ± 0.043**. El azar sería 0.20, así que los features sirven y hay margen para optimizar.
+- Tiempos reales: SVM 0.2 s/fit; RF 500 árboles 2.3 s (`sqrt`) y 8.7 s (`0.1`) por núcleo. En local el grid completo del RF cabe en ~15–25 min → **no hace falta aligerarlo** (la propuesta de la §13 solo aplica a Colab).
+
+**❌ Hallazgos del EDA:**
+- **32 % de las fotos (274/850) son infrarrojas** (grises aunque estén en RGB), repartidas de forma desigual: ~51 % de *pardalis*, ~48 % de *wiedii*, ~16 % de *onca*. Posible atajo del modelo ("nocturna → pardalis/wiedii") y factor de confusión para el experimento de color → se agregó a la fase 7b reportar también solo fotos a color.
+- Dataset heterogéneo: cámaras trampa, zoológico, animales atropellados, marcas de agua.
+
+**🧭 Decisiones:**
+- Desarrollo local con `.venv`; la notebook detecta Colab y clona el repo (necesita que el repo sea público, o autenticarse).
+- La salida de la notebook se commitea (figuras visibles en GitHub/Colab).
+
+**⏭️ Pendiente:**
+- Fase 3–4: pipelines y optimización de hiperparámetros (grid completo en local).
+- Confirmar si el repo en GitHub es público (para Colab).
+
+---
+
 ## 2026-11-17 — Plan B redefinido y Plan A mapeado al diagrama
 
 **Hecho:**

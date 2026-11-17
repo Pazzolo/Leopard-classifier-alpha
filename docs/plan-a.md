@@ -70,23 +70,24 @@ El ítem 9 (idioma) se cubre con una revisión final de todo el texto.
 ## Fases
 
 ### Fase 0 — Setup
-- [ ] Crear `notebooks/` y la notebook en Colab conectada al repo.
-- [ ] Celda de setup: `unzip` del v2, semillas (`random`, `numpy`, `torch`), versiones de las librerías.
-- [ ] Función `load_split(split) -> DataFrame` que convierte el one-hot a `label`.
+- [x] Crear `notebooks/` y la notebook en Colab conectada al repo.
+- [x] Celda de setup: `unzip` del v2, semillas (`random`, `numpy`, `torch`), versiones de las librerías.
+- [x] Función `load_split(split) -> DataFrame` que convierte el one-hot a `label`.
 
 ### Fase 1 — EDA (0.6)
-- [ ] Barras de distribución de clases por split; explicar que train está balanceado y valid/test no tanto.
-- [ ] Grid de 5×5 (5 ejemplos por especie).
-- [ ] Histograma H × W: todo es 450×450 por el resize de Roboflow. Explicar la deformación por *stretch*.
-- [ ] Normalización: media/std de los píxeles por canal (RGB). Explicar que se normaliza con media/std de ImageNet antes de la ResNet.
-- [ ] Explicar por qué no aplican estacionalidad ni skewness.
-- [ ] Mencionar la verificación de fuga entre splits (ver tabla de arriba).
+- [x] Barras de distribución de clases por split; explicar que train está balanceado y valid/test no tanto.
+- [x] Grid de 5×5 (5 ejemplos por especie).
+- [x] Histograma H × W: todo es 450×450 por el resize de Roboflow. Explicar la deformación por *stretch*.
+- [x] Normalización: media/std de los píxeles por canal (RGB). Explicar que se normaliza con media/std de ImageNet antes de la ResNet.
+- [x] Explicar por qué no aplican estacionalidad ni skewness.
+- [x] Mencionar la verificación de fuga entre splits (ver tabla de arriba).
+- [x] *Agregado:* conteo de fotos infrarrojas (efectivamente grises) por especie.
 
 ### Fase 2 — Feature extraction (0.25) + selection (0.25)
-- [ ] `torchvision.models.resnet50(weights="IMAGENET1K_V2")`, reemplazar `fc` por `Identity`, `eval()`, `no_grad()`.
-- [ ] Transform: `Resize(224)` → `ToTensor` → `Normalize(ImageNet)`.
-- [ ] Extraer embeddings de los 850 → `X_dev (765×2048)`, `y_dev`, `X_test (85×2048)`, `y_test`; guardar en `.npy`.
-- [ ] Celda markdown que justifica omitir feature selection.
+- [x] `torchvision.models.resnet50(weights="IMAGENET1K_V2")`, reemplazar `fc` por `Identity`, `eval()`, `no_grad()`.
+- [x] Transform: `Resize(224)` → `ToTensor` → `Normalize(ImageNet)`.
+- [x] Extraer embeddings de los 850 → `X_dev (765×2048)`, `y_dev`, `X_test (85×2048)`, `y_test`; guardar en `.npy`.
+- [x] Celda markdown que justifica omitir feature selection.
 
 ### Fase 3 — Pipelines (0.5)
 - [ ] `make_pipe(clf) = Pipeline([("scaler", StandardScaler()), ("clf", clf)])`.
@@ -129,6 +130,7 @@ El ítem 9 (idioma) se cubre con una revisión final de todo el texto.
 - [ ] `cross_validate` de ambos (color y gris) con el **mismo** `RepeatedStratifiedKFold(10, 10, random_state=42)` → 100 F1 macro pareados.
 - [ ] Wilcoxon pareado, α = 0.05. H0: el color no cambia el F1 macro.
 - [ ] Boxplot color vs. gris y F1 por especie (¿a qué especies afecta más quitar el color?).
+- [ ] **Ojo con las fotos infrarrojas:** el 32 % de v2 ya es gris (más en *pardalis* y *wiedii*). Reportar también el resultado solo sobre las fotos a color, porque al pasar todo a gris se pierde la pista "foto nocturna" y no solo el color.
 - [ ] Evaluación en test (85) de ambos, solo como confirmación.
 - [ ] *Chequeo secundario:* repetir con la exportación gris de Roboflow (`classificador_imagem_segmentada`, 800 fotos en común, emparejadas por número + especie) para ver si coincide.
 - [ ] Opcional: t-SNE de los embeddings grises al lado del de color.

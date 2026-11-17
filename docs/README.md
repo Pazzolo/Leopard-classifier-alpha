@@ -8,6 +8,7 @@
 | --- | --- |
 | [00-proyecto.md](00-proyecto.md) | Enunciado general, reglas de entrega y defensa, datasets disponibles |
 | [01-rubrica.md](01-rubrica.md) | Criterios de evaluación y fórmula de nota |
+| [bitacora.md](bitacora.md) | Bitácora del capitán: qué se hizo, qué salió bien o mal, decisiones |
 | [items/](items/) | Un archivo por ítem evaluado (requisito + checklist + notas) |
 
 ## Ítems y estado

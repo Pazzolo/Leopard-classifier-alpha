@@ -16,6 +16,26 @@ Registro cronológico de lo que se hizo en el proyecto: qué salió bien, qué s
 
 ---
 
+## 2026-11-17 — Plan A sobre el dataset v2
+
+**Hecho:** se escribió [plan-a.md](plan-a.md): ResNet50 preentrenada → embeddings → SVM (RBF) vs. Random Forest, CV 10×10, Wilcoxon, t-SNE. Incluye fases con checklists, decisiones justificadas, riesgos y un plan B.
+
+**✅ Bien:** se resolvió la duda de los duplicados en v2. Cada par (número de archivo, especie) es único, no hay duplicados exactos (md5) y no hay imágenes compartidas entre splits. El CV puede ser estratificado normal, no hace falta agrupar.
+
+**❌ Mal / corregido:** la comparación píxel a píxel dentro de un mismo prefijo no se pudo hacer porque Pillow no está instalado localmente. Al final no hizo falta: no hay grupos con más de una imagen.
+
+**🧭 Decisiones:**
+- Dataset **v2** (color, 450×450). v3/v4 descartados; el segmentado queda como plan B.
+- train + valid (765) para CV; test (85) apartado hasta el final.
+- Feature selection omitida (lo permite la rúbrica).
+- Métrica a optimizar: F1 macro.
+
+**⏭️ Pendiente:**
+- Fase 0 del plan: crear la notebook en Colab.
+- Confirmar con el grupo la elección SVM vs. RF.
+
+---
+
 ## 2026-11-17 — Bitácora creada
 
 **Hecho:** se creó esta bitácora y se agregó a las reglas de [CLAUDE.md](../CLAUDE.md) la obligación de mantenerla al día.
@@ -53,6 +73,6 @@ Registro cronológico de lo que se hizo en el proyecto: qué salió bien, qué s
 - `Plantilla.md` queda intacta como fuente original.
 
 **⏭️ Pendiente:**
-- Elegir la versión del dataset (candidatas: v2 color o la segmentada).
-- Verificar los duplicados.
+- ~~Elegir la versión del dataset~~ → v2 (ver entrada del Plan A).
+- ~~Verificar los duplicados~~ → sin duplicados en v2.
 - Completar tema, motivación e integrantes en `00-proyecto.md`.

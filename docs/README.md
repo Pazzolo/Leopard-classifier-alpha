@@ -8,6 +8,7 @@
 | --- | --- |
 | [00-proyecto.md](00-proyecto.md) | Enunciado general, reglas de entrega y defensa, datasets disponibles |
 | [01-rubrica.md](01-rubrica.md) | Criterios de evaluación y fórmula de nota |
+| [plan-a.md](plan-a.md) | **Plan A:** transfer learning (ResNet50) + SVM vs. Random Forest sobre el dataset v2 |
 | [bitacora.md](bitacora.md) | Bitácora del capitán: qué se hizo, qué salió bien o mal, decisiones |
 | [items/](items/) | Un archivo por ítem evaluado (requisito + checklist + notas) |
 
@@ -33,7 +34,7 @@ Leyenda: ⬜ pendiente · 🟨 en progreso · ✅ listo
 
 ## Flujo sugerido
 
-1. Elegir la versión del dataset ([00-proyecto.md](00-proyecto.md#datasets-disponibles)).
+1. Seguir el [Plan A](plan-a.md) (dataset v2).
 2. EDA (ítem 2) → extracción de features por transfer learning (ítem 3).
 3. Pipeline (ítem 7) → optimización de hiperparámetros (ítem 5) → comparación estadística (ítem 6).
 4. t-SNE (ítem 8) sobre los embeddings.

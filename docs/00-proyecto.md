@@ -45,6 +45,8 @@ Exportaciones de Roboflow en formato *multiclass* (carpetas `train/ valid/ test/
 
 Ninguna versión trae data augmentation de Roboflow. Todas usan resize con *stretch* (se deforma la relación de aspecto).
 
-**Decisión pendiente:** qué versión usar. v2 (color) o la segmentada parecen las únicas viables; v3/v4 no permiten evaluar 2 de las 5 clases.
+**Decisión:** se usa **v2** (color) — ver [plan-a.md](plan-a.md). v3/v4 no permiten evaluar 2 de las 5 clases; la segmentada queda como plan B.
 
-**Por verificar:** los nombres de archivo repiten el mismo prefijo de origen (p. ej. `100_jpg.rf.<hash>`) varias veces. Hay que confirmar si son imágenes distintas de clases distintas con el mismo número o copias de la misma foto. Si son copias, hay que agruparlas para que no caigan en folds distintos del CV (fuga de datos; ver ítems [5](items/05-optimizacion-hiperparametros.md) y [6](items/06-comparacion-estadistica.md)).
+**Verificado (v2):** el número del nombre de archivo (`100_jpg.rf.<hash>`) se repite entre especies distintas, pero cada par (número, especie) aparece una sola vez. No hay duplicados exactos ni imágenes compartidas entre train/valid/test, así que no hay fuga de datos. Detalle en la [bitácora](bitacora.md).
+
+**Plan de trabajo:** ver [plan-a.md](plan-a.md) (usa v2).

@@ -16,6 +16,24 @@ Registro cronológico de lo que se hizo en el proyecto: qué salió bien, qué s
 
 ---
 
+## 2026-11-17 — Fases 6–7: evaluación final en test y t-SNE
+
+**Hecho:** secciones 9 (test) y 10 (t-SNE) de la notebook. Figuras: `test_matrices_confusion`, `test_roc`, `tsne_resnet_vs_pixeles`, `tsne_resnet_especie_y_tipo`.
+
+**✅ Bien:**
+- SVM en test: F1 macro 0.749, coherente con el CV (0.775). *L. geoffroyi* F1 1.0 y *P. onca* 0.95.
+- t-SNE: con ResNet50 aparecen grupos (*P. onca* aislada); con píxeles crudos todo mezclado → el transfer learning queda justificado visualmente.
+- **Hallazgo:** en el t-SNE las fotos infrarrojas forman su propia isla: la ResNet50 separa día/noche antes que la especie. Acierto del SVM 82.7 % en color vs. 67.5 % en infrarrojas.
+
+**❌ Sorpresa / corregido:**
+- **En test el RF supera al SVM** (68 vs. 65 aciertos de 85), al revés que en el CV. Se agregó el **test de McNemar**: solo 11 fotos en desacuerdo (7–4) y p = 0.55 → no significativo. La conclusión se sigue apoyando en el CV. Hay que saber defenderlo (pregunta agregada a decisiones).
+
+**🧭 Decisiones:** no se cambia el modelo ganador por el resultado en test. Elegir según el test sería usarlo para selección de modelo.
+
+**⏭️ Pendiente:** fase 7b (color vs. gris; ahora más interesante por el hallazgo día/noche) y fase 8 (textos).
+
+---
+
 ## 2026-11-17 — Fase 5: comparación estadística SVM vs. Random Forest
 
 **Hecho:** sección 8 de la notebook. Ambos modelos optimizados evaluados con el mismo CV 10×10 y 7 métricas, boxplot, scores pareados, Shapiro, Wilcoxon, t-test corregido de Nadeau–Bengio y curvas ROC one-vs-rest. Figuras: `comparacion_boxplot`, `comparacion_pareada`, `roc_cv`. Además se agregó a `CLAUDE.md` que Claude avanza entre fases sin esperar confirmación.

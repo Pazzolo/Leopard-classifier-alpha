@@ -124,13 +124,17 @@ Empates resueltos eligiendo el modelo más simple (menor `C`; menor `max_depth`)
 **Resultado:** SVM > RF en todas las métricas. F1 macro 0.775 vs. 0.710 (+0.066; SVM gana 93/100 folds). Wilcoxon p = 2.2e-17; t corregido p = 3.4e-5 → diferencia significativa.
 
 ### Fase 6 — Evaluación final en test
-- [ ] Reentrenar ambos mejores pipelines en los 765 de desarrollo y evaluar **una vez** en los 85 de test.
-- [ ] Classification report, matriz de confusión, curvas ROC one-vs-rest con AUC macro y micro.
+- [x] Reentrenar ambos mejores pipelines en los 765 de desarrollo y evaluar **una vez** en los 85 de test.
+- [x] Classification report, matriz de confusión, curvas ROC one-vs-rest con AUC macro y micro.
+- [x] *Agregado:* test de McNemar (SVM vs. RF en test) y acierto por tipo de foto (color vs. infrarroja).
+
+**Resultado:** en test RF 68/85 vs. SVM 65/85 (F1 0.786 vs. 0.749), pero McNemar p = 0.55 → no significativo. SVM en test (0.749) coherente con su CV (0.775). Acierto SVM: 82.7 % color vs. 67.5 % infrarrojas.
 
 ### Fase 7 — t-SNE (1.0)
-- [ ] t-SNE 2D de los embeddings ResNet (los 850), color = especie, perplexity ∈ {15, 30, 50}.
-- [ ] Contraste: t-SNE de los píxeles crudos (reducidos a 64×64 + PCA 50) para mostrar lo que aporta el transfer learning.
-- [ ] Interpretar qué especies se solapan y relacionarlo con la matriz de confusión.
+- [x] t-SNE 2D de los embeddings ResNet (los 850), color = especie, perplexity ∈ {15, 30, 50}.
+- [x] Contraste: t-SNE de los píxeles crudos (reducidos a 64×64 + PCA 50) para mostrar lo que aporta el transfer learning.
+- [x] Interpretar qué especies se solapan y relacionarlo con la matriz de confusión.
+- [x] *Agregado:* el mismo t-SNE coloreado por tipo de foto → las infrarrojas forman su propia isla.
 
 ### Fase 7b — Experimento extra: ¿importa el color?
 

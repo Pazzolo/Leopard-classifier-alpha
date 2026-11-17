@@ -244,6 +244,27 @@ El SVM gana en todas las métricas, incluidas AUC macro (0.949 vs. 0.928) y micr
 
 > **Mensaje clave:** el t-SNE muestra visualmente qué aporta el transfer learning frente a los píxeles crudos.
 
+**Resultados en test (85 imágenes):**
+
+| | SVM | Random Forest |
+| --- | --- | --- |
+| Aciertos | 65/85 (0.765) | 68/85 (0.800) |
+| F1 macro | 0.749 | 0.786 |
+| AUC macro | 0.940 | 0.943 |
+
+- En test gana el RF por **3 imágenes**, pero **McNemar p = 0.55 → no significativo**. La conclusión se basa en el CV (100 folds), no en 85 fotos.
+- Mejor reconocidas: *L. geoffroyi* y *P. onca*. Más confundidas: *wiedii* ↔ *tigrinus* ↔ *pardalis*.
+- Acierto del SVM: **82.7 % en fotos a color vs. 67.5 % en infrarrojas**.
+
+**Resultados del t-SNE:**
+- Con embeddings ResNet50 hay grupos claros (*P. onca* aislada); con píxeles crudos todo se mezcla → el transfer learning aporta.
+- **Hallazgo clave:** el eje principal del espacio es **día/noche**: las fotos infrarrojas forman su propia isla y dentro de ella las especies se mezclan.
+
+> **Mensaje clave (hallazgo):** la ResNet50 separa primero las fotos nocturnas de las diurnas y después la especie; por eso las fotos infrarrojas son las que más se equivocan.
+
+**Pregunta probable:** *En test gana el Random Forest. ¿Entonces no es mejor el SVM?*
+→ En test la diferencia son 3 imágenes de 85 y McNemar da p = 0.55: no es significativa. El CV evalúa 100 particiones y ahí el SVM gana en 93 de 100 (Wilcoxon p ≈ 10⁻¹⁷). Un test de 85 imágenes no tiene poder para distinguir modelos tan cercanos.
+
 ---
 
 ## 13. Costo computacional estimado

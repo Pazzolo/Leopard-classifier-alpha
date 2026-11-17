@@ -16,6 +16,20 @@ Registro cronológico de lo que se hizo en el proyecto: qué salió bien, qué s
 
 ---
 
+## 2026-11-17 — Diferencias entre las 4 carpetas
+
+**Hecho:** se compararon las particiones de las 4 versiones y se actualizó la tabla de [00-proyecto.md](00-proyecto.md#datasets-disponibles).
+
+**Hallazgos:**
+- **v4 = v3 a mayor resolución:** misma partición exacta (850/850).
+- v3/v4 mantienen 762/849 fotos en el mismo split que v2; la segmentada solo 518/800.
+- En v3/v4 la foto #159 de *L. geoffroyi* quedó como `Unlabeled`.
+- A la segmentada le faltan 50 fotos (sobre todo *wiedii*, *geoffroyi* y *tigrinus*).
+
+**🧭 Decisiones:** se confirma v2 como el dataset más limpio.
+
+---
+
 ## 2026-11-17 — Diagrama del pipeline (pizarra de clase)
 
 **Hecho:** se replicó en HTML el diagrama de la pizarra: [diagrama-pipeline.html](diagrama-pipeline.html). Flujo: datos → feature extraction (a) clásica / (b) transfer learning → embedding → feature selection* (solo tabular) → modelos (curva de optimización + k-fold). Lo del Plan A está marcado en verde y hay una tabla pizarra vs. Plan A.

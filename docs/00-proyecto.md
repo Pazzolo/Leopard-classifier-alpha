@@ -39,9 +39,9 @@ Exportaciones de Roboflow en formato *multiclass* (carpetas `train/ valid/ test/
 | Carpeta | Preprocesamiento | train | valid | test | Observaciones |
 | --- | --- | --- | --- | --- | --- |
 | `classificador_felideos.v2i.multiclass` | 450×450, color | 680 | 85 | 85 | 5 clases en todos los splits; train balanceado (~136/clase) |
-| `classificador_felideos.v3i.multiclass` | 150×150, escala de grises | 767 | 41 | 42 | ⚠️ valid/test **sin** `WIEDII` ni `ONCA`; columna extra `Unlabeled` (1 imagen) |
-| `classificador_felideos.v4i.multiclass` | 450×450, escala de grises | 767 | 41 | 42 | Mismos problemas que v3 |
-| `classificador_imagem_segmentada.v1i.multiclass` | 640×640, escala de grises | 640 | 80 | 80 | 5 clases en todos los splits. ⚠️ Pese al nombre, en las muestras revisadas el fondo **no** está removido |
+| `classificador_felideos.v3i.multiclass` | 150×150, escala de grises | 767 | 41 | 42 | ⚠️ valid/test **sin** `WIEDII` ni `ONCA`; columna extra `Unlabeled`: la foto #159 de *L. geoffroyi* perdió su etiqueta |
+| `classificador_felideos.v4i.multiclass` | 450×450, escala de grises | 767 | 41 | 42 | **Idéntica a v3** (misma partición, 850/850) pero a 450×450 |
+| `classificador_imagem_segmentada.v1i.multiclass` | 640×640, escala de grises | 640 | 80 | 80 | 5 clases en todos los splits. 800 fotos: faltan 50 (sobre todo *wiedii*, *geoffroyi*, *tigrinus*). ⚠️ Pese al nombre, en las muestras revisadas el fondo **no** está removido |
 
 Ninguna versión trae data augmentation de Roboflow. Todas usan resize con *stretch* (se deforma la relación de aspecto).
 
@@ -49,6 +49,6 @@ Ninguna versión trae data augmentation de Roboflow. Todas usan resize con *stre
 
 **Verificado (v2):** el número del nombre de archivo (`100_jpg.rf.<hash>`) se repite entre especies distintas, pero cada par (número, especie) aparece una sola vez. No hay duplicados exactos ni imágenes compartidas entre train/valid/test, así que no hay fuga de datos. Detalle en la [bitácora](bitacora.md).
 
-**⚠️ Las 4 versiones son las mismas fotos:** son re-exportaciones del mismo conjunto (~850 fotos) con distinto procesamiento. 849/850 pares (número, especie) coinciden entre versiones, La inspección visual de la foto #100 (ocelote y tigrillo) muestra la misma imagen en v2, v4 y la segmentada. Una comparación de píxeles de **todos** los pares (miniaturas 32×32 en grises) da una correlación media de 0.95–0.99 entre versiones, contra ~0.05 entre fotos al azar. Cada versión reparte las fotos en splits distintos: 43/85 fotos del test de v2 están en el train de v3/v4, y 66/85 en el train de la segmentada. **Mezclar versiones sin agrupar por foto produce fuga de datos.**
+**⚠️ Las 4 versiones son las mismas fotos:** son re-exportaciones del mismo conjunto (~850 fotos) con distinto procesamiento. 849/850 pares (número, especie) coinciden entre versiones, La inspección visual de la foto #100 (ocelote y tigrillo) muestra la misma imagen en v2, v4 y la segmentada. Una comparación de píxeles de **todos** los pares (miniaturas 32×32 en grises) da una correlación media de 0.95–0.99 entre versiones, contra ~0.05 entre fotos al azar. Cada versión reparte las fotos en splits distintos: 43/85 fotos del test de v2 están en el train de v3/v4, y 66/85 en el train de la segmentada. Fotos en el mismo split que v2: v3/v4 762/849, segmentada 518/800. **Mezclar versiones sin agrupar por foto produce fuga de datos.**
 
 **Plan de trabajo:** ver [plan-a.md](plan-a.md) (usa v2).

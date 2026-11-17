@@ -16,6 +16,36 @@ Registro cronológico de lo que se hizo en el proyecto: qué salió bien, qué s
 
 ---
 
+## 2026-11-17 — Fases 3–4: pipelines y optimización de hiperparámetros
+
+**Hecho:** secciones 6 (pipelines) y 7 (optimización) de la notebook, ejecutadas en local con CV 10×10 y F1 macro. Resultados guardados en `outputs/cv/` (caché) y figuras en `outputs/figures/` (`opt_svm_C_gamma`, `opt_rf_depth_features`, `curvas_aprendizaje`, `opt_svm_optuna`).
+
+| Modelo | Mejores hiperparámetros | F1 macro | Tiempo |
+| --- | --- | --- | --- |
+| SVM (grilla, 42 comb.) | `C=100`, `gamma=1e-4` | **0.776 ± 0.040** | 7.8 min |
+| SVM (Optuna, 60 pruebas) | `C≈21.6`, `gamma≈1.4e-4` | 0.780 | 9.7 min |
+| RF (grilla, 36 comb.) | 500 árboles, `max_depth=20`, `max_features=0.1` | **0.710 ± 0.047** | 36.5 min |
+
+**✅ Bien:**
+- La optimización subió el SVM de 0.684 (por defecto) a 0.776.
+- Optuna confirma la región óptima de la grilla (mejora de 0.004, dentro del ruido).
+- Mantener la grilla completa del RF fue acertado: gana `max_features=0.1`, la opción que la propuesta de aligerar habría quitado.
+
+**❌ Mal / corregido:**
+- **Estimación de tiempo del RF errada:** 36.5 min reales contra 15–25 estimados. Medir un entrenamiento suelto no refleja que 7 procesos en paralelo compiten por la CPU.
+- **Empates resueltos al azar:** `C=100` y `C=1000` (y `max_depth` 20/40/None) dan el mismo F1; GridSearch elegía uno arbitrario (`C=1000`, `max_depth=40`). Se agregó un desempate explícito por **modelo más simple** y se recalcularon las curvas de aprendizaje.
+- Bug menor: la caché de la curva del RF se guardaba como `lc_random` (por `"Random Forest".split()[0]`). Ahora la caché lleva un hash de los hiperparámetros, así que se invalida sola si cambian.
+- Se limpiaron un aviso de tqdm (Optuna) y uno de pandas (`fillna` con texto).
+
+**🧭 Decisiones:**
+- Desempate por parsimonia (menor `C`; menor `max_depth`, luego menos árboles).
+- En la búsqueda del SVM se usa `probability=False` (5× más rápido); las probabilidades se activan para la comparación (ROC/AUC).
+- Los CSV de `outputs/cv/` se versionan: permiten regenerar las gráficas sin repetir los ~70 min de cómputo.
+
+**⏭️ Pendiente:** fase 5, comparación estadística SVM vs. RF (Wilcoxon + todas las métricas).
+
+---
+
 ## 2026-11-17 — Entorno local y fases 0–2 de la notebook
 
 **Hecho:**

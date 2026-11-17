@@ -90,17 +90,27 @@ El ítem 9 (idioma) se cubre con una revisión final de todo el texto.
 - [x] Celda markdown que justifica omitir feature selection.
 
 ### Fase 3 — Pipelines (0.5)
-- [ ] `make_pipe(clf) = Pipeline([("scaler", StandardScaler()), ("clf", clf)])`.
-- [ ] Mismo pipeline en las fases 4 y 5.
+- [x] `make_pipe(clf) = Pipeline([("scaler", StandardScaler()), ("clf", clf)])`.
+- [x] Mismo pipeline en las fases 4 y 5.
 
 ### Fase 4 — Optimización de hiperparámetros (3.5)
-- [ ] Espacios de búsqueda:
+- [x] Espacios de búsqueda:
   - SVM: `C ∈ logspace(-3, 3)`, `gamma ∈ {"scale"} ∪ logspace(-5, -1)`
   - RF: `n_estimators ∈ {100, 300, 500}`, `max_depth ∈ {None, 10, 20, 40}`, `max_features ∈ {"sqrt", "log2", 0.1}`
-- [ ] `GridSearchCV(pipe, grid, cv=RepeatedStratifiedKFold(10, 10), scoring="f1_macro", n_jobs=-1)`.
-- [ ] **Gráfica de optimización:** F1 macro medio ± std vs. `C` (SVM, eje log) y vs. `max_depth` (RF).
-- [ ] **Curva de aprendizaje** (`learning_curve`) de cada mejor modelo, con interpretación de sesgo y varianza.
-- [ ] *Extra:* repetir la búsqueda del SVM con Optuna y comparar con el grid.
+- [x] `GridSearchCV(pipe, grid, cv=RepeatedStratifiedKFold(10, 10), scoring="f1_macro", n_jobs=-1)`.
+- [x] **Gráfica de optimización:** F1 macro medio ± std vs. `C` (SVM, eje log) y vs. `max_depth` (RF).
+- [x] **Curva de aprendizaje** (`learning_curve`) de cada mejor modelo, con interpretación de sesgo y varianza.
+- [x] *Extra:* repetir la búsqueda del SVM con Optuna y comparar con el grid.
+
+**Resultados (CV 10×10, F1 macro):**
+
+| Modelo | Mejores hiperparámetros | F1 macro | Tiempo de búsqueda |
+| --- | --- | --- | --- |
+| SVM (grilla) | `C=100`, `gamma=1e-4` | **0.776 ± 0.040** | 7.8 min |
+| SVM (Optuna, 60 pruebas) | `C≈21.6`, `gamma≈1.4e-4` | 0.780 | 9.7 min |
+| Random Forest (grilla) | `n_estimators=500`, `max_depth=20`, `max_features=0.1` | **0.710 ± 0.047** | 36.5 min |
+
+Empates resueltos eligiendo el modelo más simple (menor `C`; menor `max_depth`). Curvas de aprendizaje: F1 train = 1.0 en ambos y la validación sigue subiendo con más datos → varianza alta; más imágenes ayudarían.
 
 ### Fase 5 — Comparación estadística (3.5)
 - [ ] `cross_validate` de los 2 mejores pipelines con el **mismo** `RepeatedStratifiedKFold(10, 10, random_state=42)` y `scoring` = accuracy, precision_macro, recall_macro, f1_macro, f1_weighted, roc_auc_ovr (macro).

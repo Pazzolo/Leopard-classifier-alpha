@@ -179,6 +179,19 @@ foto (224×224, normalizada con media/std de ImageNet) → ResNet50 → vector d
 
 **Por qué estos rangos:** escala logarítmica para `C` y `gamma` porque su efecto es multiplicativo; los valores del RF cubren desde árboles poco profundos hasta sin límite.
 
+**Resultados:**
+
+| Modelo | Mejores hiperparámetros | F1 macro (CV 10×10) |
+| --- | --- | --- |
+| SVM | `C=100`, `gamma=1e-4` | **0.776 ± 0.040** |
+| SVM con Optuna (extra) | `C≈21.6`, `gamma≈1.4e-4` | 0.780 (mejora dentro del ruido) |
+| Random Forest | 500 árboles, `max_depth=20`, `max_features=0.1` | **0.710 ± 0.047** |
+
+- **SVM:** con `gamma` grande (0.01–0.1) el modelo colapsa (F1 ≈ 0.07–0.22: predice casi siempre una clase). Con `gamma ≈ 1e-4` y `C ≥ 10` se llega a una meseta. El mejor `C` está en el borde de la grilla, pero es una meseta: `C=100` y `C=1000` dan exactamente lo mismo.
+- **RF:** la profundidad casi no importa a partir de 20 (los árboles no llegan más hondo); `max_features=0.1` es algo mejor que `sqrt` y `log2`.
+- **Empates:** se elige el modelo más simple (menor `C`, menor profundidad). Es una decisión explícita, defendible por parsimonia.
+- **Curvas de aprendizaje:** F1 de entrenamiento = 1.0 en ambos (memorizan el train) y la validación sigue subiendo al agregar imágenes → **varianza alta**: más datos mejorarían el modelo. El SVM está por encima del RF en todos los tamaños.
+
 **Entregables:**
 - **Gráfica de optimización:** F1 macro (media ± std) vs. `C` y vs. `max_depth`.
 - **Curva de aprendizaje:** score de entrenamiento vs. validación según el tamaño del train → diagnóstico de sesgo/varianza.
@@ -219,7 +232,7 @@ foto (224×224, normalizada con media/std de ImageNet) → ResNet50 → vector d
 
 ## 13. Costo computacional estimado
 
-> **Actualización (tiempos reales en local, Mac M3 Pro, 11 núcleos):** notebook hasta la extracción completa en **35 s** (embeddings ResNet50 en 8.8 s en la GPU del Mac). Un RF de 500 árboles tarda 2.3 s (`sqrt`) y 8.7 s (`max_features=0.1`) por núcleo; un SVM, 0.2 s. Con 11 núcleos, el grid completo del RF (3.600 entrenamientos) queda en **~15–25 min**, así que en local **no hace falta aligerarlo**. Los recortes de abajo solo serían necesarios en Colab gratuito (2 núcleos).
+> **Tiempos reales en local (Mac M3 Pro, 11 núcleos):** extracción ResNet50 en 8.8 s; búsqueda SVM **7.8 min**; búsqueda RF **36.5 min** (más que los 15–25 min estimados: 7 búsquedas en paralelo se frenan entre sí); Optuna (60 pruebas × 100 folds) **9.7 min**; curvas de aprendizaje ~15 min. Total de la notebook hasta aquí: **~70 min**. El mejor RF usa `max_features=0.1`, justo la opción que la propuesta de aligerar habría quitado, así que se mantuvo la grilla completa.
 
 Estimación previa para **Colab gratuito** (2 núcleos de CPU + GPU T4). Son números aproximados, sin medir todavía; pueden variar ×2 en cualquier dirección. Se reemplazarán por tiempos reales al correr la notebook.
 
@@ -249,6 +262,9 @@ Estimación previa para **Colab gratuito** (2 núcleos de CPU + GPU T4). Son nú
 > **Estado:** propuesta pendiente de confirmar con el grupo. Si se adopta, actualizar §10 y [plan-a.md](plan-a.md).
 
 > **Mensaje clave:** gracias a extraer los features una sola vez, todo el experimento cabe en ~1 hora de Colab. El único paso caro es la búsqueda del Random Forest, y se aligera sin tocar la comparación estadística.
+
+**Pregunta probable:** *¿Por qué el mejor C está en el borde de la grilla? ¿No habría que ampliarla?*
+→ La curva ya está plana desde C = 10: C = 100 y C = 1000 dan el mismo F1. Optuna, que explora valores continuos, tampoco encontró nada mejor fuera de ese rango (0.780 vs. 0.776).
 
 **Pregunta probable:** *¿Usar un CV distinto para la búsqueda del RF no hace injusta la comparación?*
 → No. La búsqueda solo elige los hiperparámetros. La comparación entre SVM y RF se hace después, con el **mismo** CV 10×10 para ambos modelos.

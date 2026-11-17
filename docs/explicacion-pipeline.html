@@ -1,0 +1,562 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pipeline paso a paso</title>
+<style>
+  :root {
+    --bg: #fbfaf7; --surface: #ffffff; --ink: #1d1f24; --muted: #6a6f7a; --line: #c9ccd3;
+    --accent: #c2410c; --accent-soft: #fde9dd; --ours: #0f766e; --ours-soft: #d7f0ec; --off: #9aa0aa;
+    --code: #f3f1ec;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #15171b; --surface: #1d2026; --ink: #e8e9ec; --muted: #9aa0aa; --line: #3a3f48;
+      --accent: #fb923c; --accent-soft: #3a2417; --ours: #2dd4bf; --ours-soft: #11302c; --off: #5d636d;
+      --code: #262a31;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #15171b; --surface: #1d2026; --ink: #e8e9ec; --muted: #9aa0aa; --line: #3a3f48;
+    --accent: #fb923c; --accent-soft: #3a2417; --ours: #2dd4bf; --ours-soft: #11302c; --off: #5d636d;
+    --code: #262a31;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: 64px; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+         font: 16px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 1100px; margin: 0 auto; padding: 32px 16px 64px; }
+  h1 { font-size: 1.7rem; margin: 0 0 4px; line-height: 1.25; }
+  .sub { color: var(--muted); margin: 0 0 24px; }
+  h2 { font-size: 1.35rem; margin: 0 0 4px; display: flex; align-items: center; gap: 10px; }
+  h3 { font-size: 1.05rem; margin: 22px 0 8px; }
+  p { margin: 0 0 10px; }
+  ul, ol { margin: 0 0 10px; padding-left: 22px; }
+  li { margin: 3px 0; }
+  code { background: var(--code); padding: 1px 5px; border-radius: 4px; font-size: .9em; }
+  pre { background: var(--code); padding: 12px 14px; border-radius: 10px; overflow-x: auto; font-size: .9rem; margin: 0 0 12px; }
+  em { font-style: italic; }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 18px; }
+  svg { width: 100%; height: auto; display: block; }
+  svg text { fill: var(--ink); font-family: inherit; }
+  .t-muted { fill: var(--muted); } .t-accent { fill: var(--accent); } .t-ours { fill: var(--ours); } .t-off { fill: var(--off); }
+  .stroke { stroke: var(--ink); fill: none; stroke-width: 2; }
+  .stroke-off { stroke: var(--off); fill: none; stroke-width: 2; stroke-dasharray: 6 5; }
+  .fill-ours { fill: var(--ours-soft); stroke: var(--ours); stroke-width: 2; }
+  .fill-accent { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 1.5; }
+  .arrow { stroke: var(--ink); stroke-width: 2; fill: none; marker-end: url(#arrow); }
+
+  nav.pasos { position: sticky; top: 0; z-index: 5; background: var(--bg); padding: 10px 0;
+              display: flex; gap: 8px; overflow-x: auto; border-bottom: 1px solid var(--line); margin: 24px 0 8px; }
+  nav.pasos a { flex: none; text-decoration: none; color: var(--ink); font-size: .85rem; padding: 5px 12px;
+                border: 1px solid var(--line); border-radius: 99px; background: var(--surface); white-space: nowrap; }
+  nav.pasos a:hover { border-color: var(--ours); color: var(--ours); }
+  nav.pasos a.extra { color: var(--muted); }
+
+  section.paso { margin-top: 28px; }
+  .num { flex: none; display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px;
+         border-radius: 50%; background: var(--ours); color: var(--surface); font-size: .9rem; font-weight: 700; }
+  .num.extra { background: var(--accent); }
+  .lead { color: var(--muted); margin: 0 0 14px; }
+  .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; margin: 12px 0; }
+  .box { border-radius: 10px; padding: 12px 14px; border: 1px solid var(--line); }
+  .box h4 { margin: 0 0 6px; font-size: .78rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+  .box.why { background: var(--ours-soft); border-color: transparent; }
+  .box.why h4 { color: var(--ours); }
+  .box.res { background: var(--accent-soft); border-color: transparent; }
+  .box.res h4 { color: var(--accent); }
+  .box p:last-child, .box ul:last-child { margin-bottom: 0; }
+  .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin: 12px 0; }
+  .kpi { border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
+  .kpi b { display: block; font-size: 1.35rem; line-height: 1.2; }
+  .kpi span { color: var(--muted); font-size: .82rem; }
+  .scroll { overflow-x: auto; margin: 10px 0 12px; }
+  table { width: 100%; border-collapse: collapse; font-size: .92rem; }
+  th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { color: var(--muted); font-weight: 600; }
+  td.n { font-variant-numeric: tabular-nums; white-space: nowrap; }
+  tr.win td { font-weight: 600; }
+  figure { margin: 14px 0; }
+  figure img { width: 100%; height: auto; display: block; border-radius: 10px; background: #fff;
+               border: 1px solid var(--line); padding: 6px; }
+  figcaption { color: var(--muted); font-size: .85rem; margin-top: 6px; }
+  .figs2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 12px; }
+  .hallazgo { border-left: 4px solid var(--accent); padding: 8px 14px; margin: 12px 0; background: var(--surface); border-radius: 0 10px 10px 0; }
+  .divisor { margin: 44px 0 4px; color: var(--muted); font-size: .8rem; letter-spacing: .08em; text-transform: uppercase;
+             display: flex; align-items: center; gap: 12px; }
+  .divisor::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+  footer { margin-top: 40px; color: var(--muted); font-size: .85rem; }
+</style>
+</head>
+<body>
+<main>
+  <h1>El pipeline paso a paso</h1>
+  <p class="sub">Clasificador de félidos neotropicales: cada paso del diagrama de la pizarra con qué hicimos, por qué y qué resultado obtuvimos.</p>
+
+  <div class="card">
+    <svg viewBox="0 0 1200 560" role="img" aria-labelledby="dgTitle dgDesc">
+      <title id="dgTitle">Pipeline: datos, extracción de características, embedding, selección de características y modelos</title>
+      <desc id="dgDesc">Las fotos pasan por un extractor de características (clásico o transfer learning), que produce un vector embedding. La selección de características solo aplica a datos tabulares y se omite. El vector entra a los modelos, cuyos hiperparámetros se optimizan con validación cruzada, y se predice la especie.</desc>
+      <defs>
+        <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" fill="currentColor" style="fill: var(--ink)"/>
+        </marker>
+      </defs>
+
+      <!-- ── 1. Datos ───────────────────────────── -->
+      <text x="130" y="60" text-anchor="middle" font-size="15" class="t-muted" font-weight="600">1 · DATOS</text>
+      <g transform="translate(80,110)">
+        <ellipse cx="50" cy="0" rx="50" ry="14" class="fill-ours"/>
+        <path d="M0,0 V130 A50,14 0 0 0 100,130 V0" class="fill-ours"/>
+        <ellipse cx="50" cy="0" rx="50" ry="14" class="fill-ours"/>
+        <text x="50" y="72" text-anchor="middle" font-size="15" font-weight="600">850</text>
+        <text x="50" y="92" text-anchor="middle" font-size="13">fotos</text>
+      </g>
+      <text x="130" y="290" text-anchor="middle" font-size="13" class="t-ours" font-weight="600">v2 · color · 5 especies</text>
+
+      <!-- tipos de dato posibles -->
+      <text x="130" y="335" text-anchor="middle" font-size="12" class="t-muted">Tipos de dato posibles</text>
+      <g font-size="12">
+        <rect x="58" y="347" width="144" height="26" rx="13" class="fill-ours"/>
+        <text x="130" y="365" text-anchor="middle" font-weight="600">Imágenes ✓</text>
+        <rect x="58" y="380" width="144" height="26" rx="13" class="stroke-off"/>
+        <text x="130" y="398" text-anchor="middle" class="t-off">Texto</text>
+        <rect x="58" y="413" width="144" height="26" rx="13" class="stroke-off"/>
+        <text x="130" y="431" text-anchor="middle" class="t-off">Series de tiempo</text>
+        <rect x="58" y="446" width="144" height="26" rx="13" class="stroke-off"/>
+        <text x="130" y="464" text-anchor="middle" class="t-off">Tabular</text>
+      </g>
+
+      <path d="M200,175 H262" class="arrow"/>
+
+      <!-- ── 2. Feature extraction (embudo) ───────── -->
+      <text x="390" y="60" text-anchor="middle" font-size="15" class="t-muted" font-weight="600">2 · FEATURE EXTRACTION</text>
+      <path d="M270,80 L510,140 L510,210 L270,270 Z" class="stroke"/>
+      <text x="380" y="168" text-anchor="middle" font-size="17" font-weight="600">Feature</text>
+      <text x="380" y="190" text-anchor="middle" font-size="17" font-weight="600">Extraction</text>
+
+      <g font-size="13">
+        <rect x="270" y="300" width="240" height="56" rx="10" class="stroke-off"/>
+        <text x="284" y="323" class="t-accent" font-weight="600">a) Clásica</text>
+        <text x="284" y="343" class="t-off">píxeles → PCA · HoG / SIFT + BoVW</text>
+
+        <rect x="270" y="368" width="240" height="78" rx="10" class="fill-ours"/>
+        <text x="284" y="391" class="t-accent" font-weight="600">b) Transfer learning ✓</text>
+        <text x="284" y="412">Modelo preentrenado:</text>
+        <text x="284" y="432" class="t-ours" font-weight="600">ResNet50 · CLIP</text>
+      </g>
+      <text x="390" y="470" text-anchor="middle" font-size="12" class="t-muted">en la pizarra: “CLIP”</text>
+
+      <!-- ── 3. Embedding ───────────────────────── -->
+      <text x="575" y="60" text-anchor="middle" font-size="15" class="t-muted" font-weight="600">3 · EMB</text>
+      <g transform="translate(555,120)">
+        <rect x="0" y="0"   width="40" height="22" class="fill-ours"/>
+        <rect x="0" y="22"  width="40" height="22" class="fill-ours"/>
+        <rect x="0" y="44"  width="40" height="22" class="fill-ours"/>
+        <rect x="0" y="66"  width="40" height="22" class="fill-ours"/>
+        <rect x="0" y="88"  width="40" height="22" class="fill-ours"/>
+      </g>
+      <text x="575" y="258" text-anchor="middle" font-size="13" font-weight="600">vector</text>
+      <text x="575" y="276" text-anchor="middle" font-size="12" class="t-muted">2048 dims</text>
+      <text x="575" y="292" text-anchor="middle" font-size="12" class="t-muted">(ResNet50)</text>
+
+      <path d="M510,175 H550" class="stroke"/>
+      <path d="M600,175 H662" class="arrow"/>
+
+      <!-- ── 4. Feature selection ───────────────── -->
+      <text x="750" y="60" text-anchor="middle" font-size="15" class="t-muted" font-weight="600">4 · FEATURE SELECTION</text>
+      <ellipse cx="750" cy="175" rx="82" ry="58" class="stroke-off"/>
+      <text x="750" y="170" text-anchor="middle" font-size="16" class="t-off" font-weight="600">Feature</text>
+      <text x="750" y="190" text-anchor="middle" font-size="16" class="t-off" font-weight="600">Selection *</text>
+      <text x="750" y="262" text-anchor="middle" font-size="12" class="t-accent" font-weight="600">* solo datos tabulares</text>
+      <text x="750" y="280" text-anchor="middle" font-size="12" class="t-muted">imágenes + transfer learning</text>
+      <text x="750" y="296" text-anchor="middle" font-size="12" class="t-muted">→ se omite</text>
+
+      <path d="M832,175 H900" class="arrow"/>
+
+      <!-- ── 5. Modelos ─────────────────────────── -->
+      <text x="1030" y="60" text-anchor="middle" font-size="15" class="t-muted" font-weight="600">5 · MODELOS</text>
+      <ellipse cx="1030" cy="150" rx="122" ry="62" class="fill-ours"/>
+      <text x="1030" y="142" text-anchor="middle" font-size="17" font-weight="600">Modelos</text>
+      <text x="1030" y="166" text-anchor="middle" font-size="14" class="t-ours" font-weight="600">SVM  vs  Random Forest</text>
+
+      <!-- curva de optimización -->
+      <g transform="translate(920,240)">
+        <text x="110" y="0" text-anchor="middle" font-size="12" class="t-muted">Optimización de hiperparámetros</text>
+        <line x1="10" y1="100" x2="220" y2="100" class="stroke" stroke-width="1.5" marker-end="url(#arrow)"/>
+        <line x1="10" y1="100" x2="10" y2="14" class="stroke" stroke-width="1.5" marker-end="url(#arrow)"/>
+        <polyline points="22,92 60,40 98,62 136,88 174,70 208,78" fill="none" style="stroke: var(--accent)" stroke-width="2"/>
+        <g style="fill: var(--accent)">
+          <circle cx="22" cy="92" r="4"/><circle cx="60" cy="40" r="5"/><circle cx="98" cy="62" r="4"/>
+          <circle cx="136" cy="88" r="4"/><circle cx="174" cy="70" r="4"/><circle cx="208" cy="78" r="4"/>
+        </g>
+        <text x="60" y="30" text-anchor="middle" font-size="11" class="t-accent" font-weight="600">mejor</text>
+        <text x="0" y="22" text-anchor="end" font-size="11" class="t-muted">F1</text>
+        <text x="220" y="118" text-anchor="end" font-size="11" class="t-muted">C, max_depth…</text>
+      </g>
+
+      <!-- repeated k-fold -->
+      <g transform="translate(920,385)">
+        <text x="110" y="0" text-anchor="middle" font-size="12" class="t-muted">Repeated stratified k-fold (10×10)</text>
+        <g transform="translate(10,14)">
+          <rect x="0"   y="0" width="18" height="90" class="stroke" stroke-width="1.2"/>
+          <rect x="20"  y="0" width="18" height="90" class="stroke" stroke-width="1.2"/>
+          <rect x="40"  y="0" width="18" height="90" class="fill-accent"/>
+          <rect x="60"  y="0" width="18" height="90" class="stroke" stroke-width="1.2"/>
+          <rect x="80"  y="0" width="18" height="90" class="stroke" stroke-width="1.2"/>
+          <rect x="100" y="0" width="18" height="90" class="stroke" stroke-width="1.2"/>
+          <rect x="120" y="0" width="18" height="90" class="stroke" stroke-width="1.2"/>
+          <rect x="140" y="0" width="18" height="90" class="stroke" stroke-width="1.2"/>
+          <rect x="160" y="0" width="18" height="90" class="stroke" stroke-width="1.2"/>
+          <rect x="180" y="0" width="18" height="90" class="stroke" stroke-width="1.2"/>
+          <line x1="208" y1="0" x2="208" y2="90" class="stroke" stroke-width="1.2" stroke-dasharray="3 4"/>
+        </g>
+        <text x="58" y="124" text-anchor="middle" font-size="11" class="t-accent">fold de validación</text>
+        <text x="218" y="124" text-anchor="end" font-size="11" class="t-muted">target: especie</text>
+      </g>
+
+    </svg>
+  </div>
+
+  <nav class="pasos" aria-label="Pasos">
+    <a href="#datos">1 · Datos</a>
+    <a href="#extraccion">2 · Feature extraction</a>
+    <a href="#embedding">3 · Embedding</a>
+    <a href="#seleccion">4 · Feature selection</a>
+    <a href="#modelos">5 · Modelos</a>
+    <a class="extra" href="#comparacion">Comparación</a>
+    <a class="extra" href="#test">Test</a>
+    <a class="extra" href="#tsne">t-SNE</a>
+    <a class="extra" href="#color">Color vs. gris</a>
+    <a class="extra" href="#resumen">Resumen</a>
+  </nav>
+
+  <!-- ───────── 1 · DATOS ───────── -->
+  <section class="paso card" id="datos">
+    <h2><span class="num">1</span>Datos</h2>
+    <p class="lead">El cilindro de la pizarra: el conjunto de entrada. Los tipos posibles son texto, series de tiempo, tabular o imágenes; el nuestro es <b>imágenes</b>.</p>
+
+    <div class="kpis">
+      <div class="kpi"><b>850</b><span>fotos a color, 450×450</span></div>
+      <div class="kpi"><b>5</b><span>especies</span></div>
+      <div class="kpi"><b>765 + 85</b><span>desarrollo + test</span></div>
+      <div class="kpi"><b>32 %</b><span>fotos infrarrojas (nocturnas)</span></div>
+    </div>
+
+    <h3>Qué hicimos</h3>
+    <ul>
+      <li>Usamos la exportación <b>v2</b> del dataset <em>classificador_felideos</em> (Roboflow Universe, CC BY 4.0): train 680, valid 85, test 85.</li>
+      <li>Especies: <em>L. geoffroyi</em>, <em>L. pardalis</em>, <em>L. tigrinus</em>, <em>L. wiedii</em> y <em>P. onca</em>.</li>
+      <li>Unimos train + valid en un <b>conjunto de desarrollo de 765 fotos</b> para toda la validación cruzada. Las <b>85 de test</b> se apartan y se usan una sola vez, al final.</li>
+      <li>Antes de modelar, hicimos el <b>EDA</b> (sección 3 de la notebook).</li>
+    </ul>
+
+    <div class="grid2">
+      <div class="box why">
+        <h4>Por qué v2</h4>
+        <p>De las 4 exportaciones es la única <b>a color</b> con <b>las 5 especies en todos los splits</b>. v3 y v4 no tienen <em>wiedii</em> ni <em>onca</em> en valid/test, y la "segmentada" conserva el fondo. Además, las 4 versiones son <b>las mismas fotos</b>: mezclarlas habría metido fotos de test en el entrenamiento (fuga de datos).</p>
+      </div>
+      <div class="box res">
+        <h4>Hallazgo del EDA</h4>
+        <p><b>32 % de las fotos son infrarrojas</b> (nocturnas, sin color), repartidas de forma desigual: ~50 % de <em>pardalis</em> y <em>wiedii</em>, solo ~16 % de <em>onca</em>.</p>
+      </div>
+    </div>
+
+    <div class="scroll">
+      <table>
+        <thead><tr><th>Pregunta del EDA</th><th>Respuesta</th></tr></thead>
+        <tbody>
+          <tr><td>¿Está balanceada?</td><td>Train sí (135–137 por especie). Valid/test no tanto (11–23) → usamos <b>F1 macro</b></td></tr>
+          <tr><td>¿Resolución?</td><td>Todas 450×450 (Roboflow las estiró: se pierde la relación de aspecto)</td></tr>
+          <tr><td>¿Normalizada?</td><td>Píxeles en [0, 1], media ~0.42 y std ~0.23 por canal. Se normaliza con media/std de ImageNet antes de la red</td></tr>
+          <tr><td>¿Fuga de datos?</td><td>No: 0 imágenes duplicadas (hash MD5)</td></tr>
+          <tr><td>¿Estacionalidad / skewness?</td><td>No aplican a imágenes</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="figs2">
+      <figure><img src="../outputs/figures/eda_distribucion_clases.png" alt="Barras de especies por split: train balanceado, valid y test con entre 11 y 23 por especie"><figcaption>Distribución de especies por split.</figcaption></figure>
+      <figure><img src="../outputs/figures/eda_colorido.png" alt="Histograma de colorido: un pico en cero de fotos infrarrojas y una cola de fotos a color"><figcaption>Fotos a color vs. infrarrojas: el pico en 0 son las nocturnas.</figcaption></figure>
+    </div>
+    <figure><img src="../outputs/figures/eda_grid_imagenes.png" alt="Grilla de 5 fotos de ejemplo por cada especie"><figcaption>Ejemplos de entrenamiento por especie: fuentes muy variadas (cámaras trampa, zoológicos, animales atropellados).</figcaption></figure>
+  </section>
+
+  <!-- ───────── 2 · FEATURE EXTRACTION ───────── -->
+  <section class="paso card" id="extraccion">
+    <h2><span class="num">2</span>Feature extraction</h2>
+    <p class="lead">El embudo de la pizarra: convertir cada foto en números. Dos caminos: <b>a) clásica</b> (píxeles → PCA, HoG, SIFT) o <b>b) transfer learning</b> (una red ya entrenada; la pizarra menciona <b>CLIP</b>).</p>
+
+    <h3>Qué hicimos: opción b, con ResNet50</h3>
+    <pre>foto → resize 224×224 → normalizar (ImageNet) → ResNet50 sin su última capa → vector de 2048</pre>
+    <ul>
+      <li><b>ResNet50</b>: red convolucional de 50 capas (He et al., 2015), preentrenada en ImageNet (~1.2 M fotos). Sus <b>conexiones residuales</b> permiten entrenar redes muy profundas.</li>
+      <li>Se usa como <b>extractor fijo</b>: le quitamos la capa que elige entre las 1000 categorías de ImageNet y <b>no se reentrena</b>.</li>
+      <li>Los vectores se calculan <b>una sola vez</b> (8.8 s para las 850 fotos en la GPU del Mac) y se guardan.</li>
+    </ul>
+
+    <div class="grid2">
+      <div class="box why">
+        <h4>Por qué transfer learning</h4>
+        <ul>
+          <li>Con 765 fotos, una red entrenada desde cero sobreajustaría.</li>
+          <li>La ResNet50 ya sabe reconocer bordes, texturas y manchas: justo lo que distingue estos pelajes.</li>
+          <li>El t-SNE lo confirma: con píxeles crudos las especies se mezclan; con la ResNet50 forman grupos.</li>
+        </ul>
+      </div>
+      <div class="box">
+        <h4>¿Y CLIP?</h4>
+        <p>Ambos son transfer learning. Elegimos ResNet50 por ser el estándar más documentado y fácil de defender. <b>CLIP queda como plan B</b> para probar otro extractor.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───────── 3 · EMBEDDING ───────── -->
+  <section class="paso card" id="embedding">
+    <h2><span class="num">3</span>Embedding (vector)</h2>
+    <p class="lead">"emb" / "vector" en la pizarra: la salida del extractor, una huella numérica de cada foto.</p>
+
+    <div class="kpis">
+      <div class="kpi"><b>2048</b><span>números por foto</span></div>
+      <div class="kpi"><b>765 × 2048</b><span>matriz de desarrollo</span></div>
+      <div class="kpi"><b>85 × 2048</b><span>matriz de test</span></div>
+    </div>
+
+    <div class="grid2">
+      <div class="box why">
+        <h4>Por qué importa</h4>
+        <p>Desde aquí el problema deja de ser de imágenes y pasa a ser <b>tabular</b>: 850 filas (fotos) × 2048 columnas (características) + la especie (target). Todo lo que sigue usa scikit-learn sobre esa tabla.</p>
+      </div>
+      <div class="box res">
+        <h4>Chequeo rápido</h4>
+        <p>Sin optimizar (5-fold): SVM F1 macro <b>0.684</b>, Random Forest <b>0.694</b>. El azar sería 0.20, así que los vectores ya contienen información útil.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───────── 4 · FEATURE SELECTION ───────── -->
+  <section class="paso card" id="seleccion">
+    <h2><span class="num">4</span>Feature selection <span style="color:var(--accent)">*</span></h2>
+    <p class="lead">Quedarse solo con las características más útiles (p. ej. <code>SelectKBest</code>). En la pizarra lleva un asterisco y la nota <b>"Tabular Data"</b>: solo aplica a datos tabulares.</p>
+    <div class="grid2">
+      <div class="box res">
+        <h4>Qué hicimos</h4>
+        <p><b>Se omite</b>, con la justificación escrita en la notebook (sección 5).</p>
+      </div>
+      <div class="box why">
+        <h4>Por qué</h4>
+        <ul>
+          <li>La rúbrica lo permite explícitamente con transfer learning o imágenes.</li>
+          <li>Las 2048 características son <b>densas y aprendidas</b>: ninguna tiene significado propio ("la columna 734" no es "tiene manchas"). Filtrarlas una por una descartaría información que los modelos aprovechan en conjunto.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───────── 5 · MODELOS ───────── -->
+  <section class="paso card" id="modelos">
+    <h2><span class="num">5</span>Modelos</h2>
+    <p class="lead">Los algoritmos que aprenden a predecir la especie a partir del vector. Bajo el óvalo, la pizarra dibuja la <b>curva de optimización</b> y las <b>barras "→ Target"</b> (la validación cruzada).</p>
+
+    <h3>Pipeline</h3>
+    <pre>StandardScaler → clasificador</pre>
+    <p>El escalador se ajusta <b>dentro de cada fold</b>, solo con los datos de entrenamiento de ese fold, así que no se filtra información del fold de validación. El mismo pipeline se usa en la optimización, la comparación y el test.</p>
+
+    <h3>Los dos modelos</h3>
+    <div class="scroll">
+      <table>
+        <thead><tr><th></th><th>SVM (kernel RBF)</th><th>Random Forest</th></tr></thead>
+        <tbody>
+          <tr><td>Idea</td><td>Frontera de <b>máximo margen</b> entre clases, en un espacio transformado por el kernel</td><td><b>Ensamble de árboles</b> de decisión; vota la mayoría</td></tr>
+          <tr><td>Hiperparámetros</td><td><code>C</code> (penalización), <code>gamma</code> (alcance del kernel)</td><td><code>n_estimators</code>, <code>max_depth</code>, <code>max_features</code></td></tr>
+          <tr><td>Por qué</td><td>Rinde bien con muchas dimensiones (2048) y pocos ejemplos</td><td>Familia muy distinta → la comparación es informativa</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Validación cruzada (las barras "→ Target")</h3>
+    <ul>
+      <li><code>RepeatedStratifiedKFold</code>: <b>10 folds × 10 repeticiones = 100 evaluaciones</b> por configuración.</li>
+      <li><b>Estratificado</b> (cada fold mantiene la proporción de especies) y <b>repetido</b> (no depende de una sola partición).</li>
+      <li><b>Misma semilla</b> en todo el proyecto: los dos modelos se evalúan en exactamente los mismos folds.</li>
+      <li>Métrica: <b>F1 macro</b>, para que todas las especies pesen igual.</li>
+    </ul>
+
+    <h3>Optimización de hiperparámetros (la curva de la pizarra)</h3>
+    <p><code>GridSearchCV</code> sobre el CV 10×10. Ante empates se eligió el modelo más simple (menor <code>C</code>, árboles menos profundos).</p>
+    <div class="scroll">
+      <table>
+        <thead><tr><th>Modelo</th><th>Mejores hiperparámetros</th><th>F1 macro</th><th>Tiempo</th></tr></thead>
+        <tbody>
+          <tr class="win"><td>SVM</td><td><code>C = 100</code>, <code>gamma = 1e-4</code></td><td class="n">0.776 ± 0.040</td><td class="n">7.8 min</td></tr>
+          <tr><td>SVM con Optuna (extra)</td><td><code>C ≈ 21.6</code>, <code>gamma ≈ 1.4e-4</code></td><td class="n">0.780</td><td class="n">9.7 min</td></tr>
+          <tr><td>Random Forest</td><td>500 árboles, <code>max_depth = 20</code>, <code>max_features = 0.1</code></td><td class="n">0.710 ± 0.047</td><td class="n">36.5 min</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <ul>
+      <li><b>SVM:</b> <code>gamma</code> es decisivo. Con valores grandes el modelo colapsa a una sola especie (F1 ≈ 0.07); con <code>gamma ≈ 1e-4</code> y <code>C ≥ 10</code> llega a una meseta. Optimizar subió el F1 de 0.68 a 0.78.</li>
+      <li><b>Random Forest:</b> la profundidad casi no importa a partir de 20; <code>max_features = 0.1</code> es lo mejor.</li>
+      <li><b>Optuna</b> encontró prácticamente lo mismo que la grilla (+0.004).</li>
+    </ul>
+    <div class="figs2">
+      <figure><img src="../outputs/figures/opt_svm_C_gamma.png" alt="F1 macro del SVM según C, una curva por gamma; meseta en 0.78 con gamma 1e-4"><figcaption>SVM: F1 macro según <code>C</code> y <code>gamma</code>.</figcaption></figure>
+      <figure><img src="../outputs/figures/opt_rf_depth_features.png" alt="F1 macro del Random Forest según max_depth, una curva por max_features"><figcaption>Random Forest: F1 macro según <code>max_depth</code> y <code>max_features</code>.</figcaption></figure>
+    </div>
+
+    <h3>Curvas de aprendizaje</h3>
+    <div class="box res">
+      <h4>Varianza alta</h4>
+      <p>Ambos modelos sacan <b>F1 = 1.0 en entrenamiento</b> y el F1 de validación <b>sigue subiendo</b> al agregar fotos (SVM: 0.50 con 70 fotos → 0.78 con 690). Con más datos el modelo mejoraría. El SVM está por encima del RF en todos los tamaños.</p>
+    </div>
+    <figure><img src="../outputs/figures/curvas_aprendizaje.png" alt="Curvas de aprendizaje del SVM y del Random Forest: entrenamiento en 1.0 y validación en ascenso"><figcaption>Curvas de aprendizaje (CV 10×10).</figcaption></figure>
+  </section>
+
+  <div class="divisor">Después del diagrama: lo que pide la rúbrica</div>
+
+  <!-- ───────── COMPARACIÓN ───────── -->
+  <section class="paso card" id="comparacion">
+    <h2><span class="num extra">6</span>Comparación estadística: SVM vs. Random Forest</h2>
+    <p class="lead">Ambos modelos optimizados, evaluados en los <b>mismos 100 folds</b>, con todas las métricas que pide la rúbrica.</p>
+
+    <div class="scroll">
+      <table>
+        <thead><tr><th>Métrica (CV 10×10)</th><th>SVM</th><th>Random Forest</th></tr></thead>
+        <tbody>
+          <tr><td>Accuracy</td><td class="n"><b>0.775</b></td><td class="n">0.712</td></tr>
+          <tr><td>Precision macro</td><td class="n"><b>0.787</b></td><td class="n">0.719</td></tr>
+          <tr><td>Recall macro</td><td class="n"><b>0.776</b></td><td class="n">0.713</td></tr>
+          <tr><td>F1 macro</td><td class="n"><b>0.775</b></td><td class="n">0.710</td></tr>
+          <tr><td>F1 weighted</td><td class="n"><b>0.774</b></td><td class="n">0.708</td></tr>
+          <tr><td>AUC ROC macro</td><td class="n"><b>0.949</b></td><td class="n">0.928</td></tr>
+          <tr><td>AUC ROC micro</td><td class="n"><b>0.956</b></td><td class="n">0.934</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Test de hipótesis</h3>
+    <p>H₀: no hay diferencia en F1 macro entre SVM y RF. α = 0.05.</p>
+    <div class="scroll">
+      <table>
+        <thead><tr><th>Test</th><th>Resultado</th><th>Conclusión</th></tr></thead>
+        <tbody>
+          <tr><td>Shapiro–Wilk sobre las diferencias</td><td class="n">p = 0.20</td><td>No se rechaza la normalidad</td></tr>
+          <tr class="win"><td>Wilcoxon pareado</td><td class="n">W = 58, p = 2.2 × 10⁻¹⁷</td><td>Se rechaza H₀</td></tr>
+          <tr><td>t-test corregido (Nadeau–Bengio)</td><td class="n">p = 3.4 × 10⁻⁵</td><td>Se rechaza H₀</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="grid2">
+      <div class="box res">
+        <h4>Resultado</h4>
+        <p><b>El SVM es mejor:</b> +0.066 de F1 macro y gana en <b>93 de 100 folds</b>.</p>
+      </div>
+      <div class="box why">
+        <h4>Por qué estos tests</h4>
+        <p><b>Wilcoxon:</b> los scores están pareados (mismos folds) y no exige normalidad. <b>t corregido:</b> los folds de un CV repetido no son independientes, lo que hace optimistas a los tests clásicos; este lo compensa y la conclusión se mantiene.</p>
+      </div>
+    </div>
+    <figure><img src="../outputs/figures/comparacion_boxplot.png" alt="Boxplots de las 7 métricas para SVM y Random Forest; el SVM queda arriba en todas"><figcaption>Distribución de las 7 métricas en los 100 folds.</figcaption></figure>
+    <div class="figs2">
+      <figure><img src="../outputs/figures/comparacion_pareada.png" alt="Scores pareados por fold y distribución de las diferencias, con media 0.066"><figcaption>Scores pareados por fold y distribución de las diferencias.</figcaption></figure>
+      <figure><img src="../outputs/figures/roc_cv.png" alt="Curvas ROC por especie para SVM y Random Forest; P. onca con AUC 0.995"><figcaption>Curvas ROC one-vs-rest (micro y macro).</figcaption></figure>
+    </div>
+  </section>
+
+  <!-- ───────── TEST ───────── -->
+  <section class="paso card" id="test">
+    <h2><span class="num extra">7</span>Evaluación final en test</h2>
+    <p class="lead">Ambos modelos se reentrenan con las 765 fotos de desarrollo y se evalúan <b>una sola vez</b> en las 85 de test.</p>
+    <div class="scroll">
+      <table>
+        <thead><tr><th></th><th>SVM</th><th>Random Forest</th></tr></thead>
+        <tbody>
+          <tr><td>Aciertos</td><td class="n">65 / 85 (0.765)</td><td class="n">68 / 85 (0.800)</td></tr>
+          <tr><td>F1 macro</td><td class="n">0.749</td><td class="n">0.786</td></tr>
+          <tr><td>AUC macro</td><td class="n">0.940</td><td class="n">0.943</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="hallazgo">
+      <p><b>En test gana el RF, pero por 3 fotos.</b> Los modelos solo discrepan en 11 fotos (7 a favor del RF, 4 del SVM) y el <b>test de McNemar da p = 0.55: no es significativo</b>. Con 85 fotos no se pueden distinguir modelos tan cercanos; la evidencia fuerte es el CV de 100 folds.</p>
+    </div>
+    <ul>
+      <li>El SVM en test (0.749) es coherente con su CV (0.775): no hubo sobreajuste al elegir hiperparámetros.</li>
+      <li><b>Por especie:</b> <em>L. geoffroyi</em> (F1 = 1.0) y <em>P. onca</em> (0.95) casi sin errores; las confusiones se concentran en <em>wiedii</em> ↔ <em>tigrinus</em> ↔ <em>pardalis</em>.</li>
+      <li><b>Fotos infrarrojas:</b> el SVM acierta el <b>82.7 %</b> de las fotos a color y solo el <b>67.5 %</b> de las infrarrojas.</li>
+    </ul>
+    <figure><img src="../outputs/figures/test_matrices_confusion.png" alt="Matrices de confusión en test del SVM y del Random Forest"><figcaption>Matrices de confusión en test (85 fotos).</figcaption></figure>
+  </section>
+
+  <!-- ───────── t-SNE ───────── -->
+  <section class="paso card" id="tsne">
+    <h2><span class="num extra">8</span>Visualización con t-SNE</h2>
+    <p class="lead">Proyecta los vectores de 2048 dimensiones a 2D intentando conservar qué fotos son vecinas, para <b>ver</b> si las especies forman grupos. Se aplicó a los vectores de la ResNet50 y, como contraste, a los píxeles crudos, con perplexity 15, 30 y 50.</p>
+    <ol>
+      <li><b>Con ResNet50 hay grupos; con píxeles crudos, todo mezclado.</b> Es la justificación visual del transfer learning.</li>
+      <li><em>P. onca</em> <b>forma un grupo aparte</b>, coherente con su AUC de 0.995.</li>
+      <li><em>wiedii</em> y <em>pardalis</em> están dispersas y mezcladas: son las más confundidas.</li>
+    </ol>
+    <figure><img src="../outputs/figures/tsne_resnet_vs_pixeles.png" alt="t-SNE de embeddings ResNet50 (grupos por especie) frente a píxeles crudos (todo mezclado)"><figcaption>Arriba: embeddings ResNet50. Abajo: píxeles crudos.</figcaption></figure>
+    <div class="hallazgo">
+      <p><b>Hallazgo clave:</b> coloreando por tipo de foto, <b>las infrarrojas forman su propia isla</b>. La ResNet50 separa primero <b>día/noche</b> y después la especie. Eso explica por qué las fotos nocturnas se equivocan más.</p>
+    </div>
+    <figure><img src="../outputs/figures/tsne_resnet_especie_y_tipo.png" alt="El mismo t-SNE coloreado por especie y por tipo de foto; las infrarrojas forman un grupo separado"><figcaption>El mismo t-SNE coloreado por especie (izquierda) y por tipo de foto (derecha).</figcaption></figure>
+  </section>
+
+  <!-- ───────── COLOR ───────── -->
+  <section class="paso card" id="color">
+    <h2><span class="num extra">9</span>Experimento extra: ¿importa el color?</h2>
+    <p class="lead">El mismo pipeline (ResNet50 → SVM) con las fotos <b>a color</b> y con <b>las mismas fotos convertidas a gris</b> en código. Mismos folds, SVM reoptimizado para gris, y F1 calculado aparte para fotos a color e infrarrojas.</p>
+    <div class="scroll">
+      <table>
+        <thead><tr><th>Fotos evaluadas</th><th>Color</th><th>Gris</th><th>Diferencia</th></tr></thead>
+        <tbody>
+          <tr><td>Todas</td><td class="n">0.775</td><td class="n">0.767</td><td class="n">+0.008</td></tr>
+          <tr><td>Solo fotos a color</td><td class="n">0.794</td><td class="n">0.768</td><td class="n">+0.026</td></tr>
+          <tr><td>Solo fotos infrarrojas</td><td class="n">0.650</td><td class="n">0.684</td><td class="n">−0.034</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="grid2">
+      <div class="box res">
+        <h4>Resultado</h4>
+        <p><b>En total, el color casi no importa</b> (+0.008). El Wilcoxon lo marca significativo (p = 0.02), pero el t corregido no (p = 0.54): el efecto es mínimo y no robusto. <b>La información principal es el patrón de manchas.</b></p>
+      </div>
+      <div class="box why">
+        <h4>De día ayuda, de noche estorba</h4>
+        <p>En fotos a color gana el color (sobre todo <em>wiedii</em> +0.09 y <em>tigrinus</em> +0.06). En infrarrojas gana el gris, porque con todo en gris las fotos nocturnas dejan de ser un grupo aparte. La exportación gris de Roboflow da lo mismo (0.763) que el gris hecho en código (0.771).</p>
+      </div>
+    </div>
+    <figure><img src="../outputs/figures/color_vs_gris.png" alt="Boxplots de F1 macro con color y en gris, para todas las fotos, solo a color y solo infrarrojas"><figcaption>F1 macro por fold: color vs. gris.</figcaption></figure>
+  </section>
+
+  <!-- ───────── RESUMEN ───────── -->
+  <section class="paso card" id="resumen">
+    <h2>Resumen en una diapositiva</h2>
+    <div class="scroll">
+      <table>
+        <thead><tr><th>Paso</th><th>Decisión</th><th>Resultado</th></tr></thead>
+        <tbody>
+          <tr><td>1. Datos</td><td>v2, 850 fotos a color; 765 desarrollo + 85 test</td><td>32 % de fotos infrarrojas</td></tr>
+          <tr><td>2. Feature extraction</td><td>Transfer learning con ResNet50 (fija)</td><td>Los píxeles crudos no separan especies; la ResNet sí</td></tr>
+          <tr><td>3. Embedding</td><td>Vector de 2048 por foto</td><td>Problema tabular 850 × 2048</td></tr>
+          <tr><td>4. Feature selection</td><td>Omitida (solo aplica a tabular)</td><td>—</td></tr>
+          <tr><td>5. Modelos</td><td>SVM vs. RF, <code>GridSearchCV</code> con CV 10×10, F1 macro</td><td><b>SVM 0.776</b> vs. RF 0.710</td></tr>
+          <tr><td>Comparación</td><td>Wilcoxon + t corregido</td><td>SVM mejor (p ≈ 10⁻¹⁷); gana 93/100 folds</td></tr>
+          <tr><td>Test</td><td>Una sola evaluación, 85 fotos</td><td>RF +3 fotos, no significativo (McNemar p = 0.55)</td></tr>
+          <tr><td>t-SNE</td><td>ResNet vs. píxeles; por especie y tipo de foto</td><td>La red separa día/noche antes que especie</td></tr>
+          <tr><td>Color vs. gris</td><td>Mismo pipeline, mismas fotos en gris</td><td>El color casi no importa (+0.008)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="hallazgo">
+      <p><b>Conclusión:</b> con transfer learning y un SVM se logra un <b>F1 macro de ~0.78</b> en 5 especies con solo 765 fotos. Los principales límites son las <b>fotos nocturnas</b> y las <b>especies de pelaje parecido</b>, y las curvas de aprendizaje indican que <b>más datos</b> mejorarían el modelo.</p>
+    </div>
+  </section>
+
+  <footer>Cifras y figuras generadas por <code>notebooks/clasificador_felideos.ipynb</code>. Diagrama: réplica de la pizarra de clase (<a href="diagrama-pipeline.html">diagrama-pipeline.html</a>).</footer>
+</main>
+</body>
+</html>

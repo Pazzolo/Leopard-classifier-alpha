@@ -16,6 +16,12 @@ Registro cronológico de lo que se hizo en el proyecto: qué salió bien, qué s
 
 ---
 
+## 2026-11-17 — Versión HTML del pipeline paso a paso
+
+**Hecho:** [explicacion-pipeline.html](explicacion-pipeline.html), con el mismo estilo que el diagrama: el diagrama arriba, un menú de pasos fijo, una tarjeta por paso con cuadros "por qué" y "resultado", tablas y figuras embebidas. Modo claro/oscuro. Se mantiene la versión `.md` porque se ve directo en GitHub.
+
+---
+
 ## 2026-11-17 — Documento: el pipeline paso a paso
 
 **Hecho:** se creó [explicacion-pipeline.md](explicacion-pipeline.md), que recorre el diagrama de la pizarra paso a paso (datos → feature extraction → embedding → feature selection → modelos) y luego los pasos de la rúbrica que no están en el diagrama (comparación, test, t-SNE, color vs. gris). Cada paso incluye qué es, qué hicimos, por qué, resultados y figuras. Cierra con una tabla resumen para una diapositiva.

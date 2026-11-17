@@ -16,6 +16,18 @@ Registro cronológico de lo que se hizo en el proyecto: qué salió bien, qué s
 
 ---
 
+## 2026-11-17 — Plan B redefinido y Plan A mapeado al diagrama
+
+**Hecho:**
+- Se agregó a [plan-a.md](plan-a.md) la sección *Plan A sobre el diagrama de la pizarra*: cada paso del diagrama con su fase y su ítem de la rúbrica.
+- Plan B redefinido en plan-a, decisiones y 00-proyecto.
+
+**🧭 Decisiones:**
+- **Plan B = cambiar el modelo preentrenado** (primero CLIP, el de la pizarra; luego EfficientNet o DINOv2), manteniendo el resto del pipeline.
+- El dataset "segmentado" deja de ser plan B: conserva el fondo y es v2 en grises con 50 fotos menos. El tema del gris lo cubre la fase 7b.
+
+---
+
 ## 2026-11-17 — Experimento extra: color vs. escala de grises
 
 **Hecho:** se agregó la Fase 7b a [plan-a.md](plan-a.md) y la §15 a [decisiones-plan-a.md](decisiones-plan-a.md) (más fila de costo y diapositiva 13).

@@ -27,7 +27,7 @@ Al final hay un esquema de diapositivas sugerido.
 | **v2** ✅ | 450×450, **color** | Las 5 clases están en train, valid y test; train balanceado |
 | v3 ❌ | 150×150, grises | Valid/test **no tienen** *wiedii* ni *onca* → no se puede evaluar el 40 % de las clases |
 | v4 ❌ | 450×450, grises | Mismo problema que v3 |
-| Segmentada | 640×640, grises | Válida, pero queda como **plan B** (y en las muestras revisadas el fondo no está removido) |
+| Segmentada ❌ | 640×640, grises | Pese al nombre, **conserva el fondo**: es v2 en grises con 50 fotos menos y otra partición |
 
 **Por qué color:** el color del pelaje es una de las pistas para distinguir especies, y la ResNet50 se entrenó con imágenes a color.
 
@@ -40,7 +40,7 @@ Al final hay un esquema de diapositivas sugerido.
 > **Mensaje clave:** se eligió v2 porque es la única versión a color con las 5 especies en todos los splits y sin fuga de datos.
 
 **Pregunta probable:** *¿Por qué no usaron la versión segmentada, que quita el fondo?*
-→ Queda como plan B para comparar. Empezamos con v2 porque conserva el color y no depende de la calidad de la segmentación.
+→ La revisamos y no quita el fondo: comparada píxel a píxel con v2 da una correlación de 0.99. Es v2 en escala de grises con 50 fotos menos. El efecto del gris lo medimos aparte, de forma controlada (§15).
 
 ---
 
@@ -82,7 +82,7 @@ foto (224×224, normalizada con media/std de ImageNet) → ResNet50 → vector d
 | Píxeles → PCA → ML | Los píxeles crudos no capturan bien las texturas; se usa solo como contraste en el t-SNE |
 | SIFT/HoG + Bag of Visual Words | Más trabajo manual y, en general, peor que las CNN preentrenadas |
 | Fine-tuning de la red completa | Más costoso, riesgo de sobreajuste con pocos datos y más difícil de evaluar con CV 10×10 |
-| EfficientNet / ViT (DINOv2) | Buenas opciones; quedan como plan B si ResNet50 no rinde |
+| CLIP (el de la pizarra), EfficientNet, DINOv2 | Buenas opciones; quedan como **plan B** si ResNet50 no rinde (CLIP primero) |
 
 > **Mensaje clave:** transfer learning: ResNet50 preentrenada convierte cada foto en un vector de 2048 características; no se entrena ninguna red.
 
@@ -259,7 +259,7 @@ Estimación previa para **Colab gratuito** (2 núcleos de CPU + GPU T4). Son nú
 | --- | --- |
 | Test pequeño → métricas ruidosas | Conclusiones basadas en el CV (100 scores) |
 | Especies muy parecidas | Esperado; se analiza con la matriz de confusión y el t-SNE |
-| Rendimiento bajo | Plan B: otro backbone (EfficientNet, DINOv2) o el dataset segmentado |
+| Rendimiento bajo | Plan B: cambiar el modelo preentrenado, primero **CLIP** y luego EfficientNet o DINOv2 |
 | Costo computacional (~3–5 h con el plan original) | Ajustes de la §13 → ~1 h |
 
 ---

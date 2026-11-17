@@ -6,6 +6,21 @@ Plan de trabajo para cubrir los 11 ítems de la [rúbrica](01-rubrica.md) usando
 
 Imagen → **ResNet50 preentrenada (ImageNet)** → embedding de 2048 dims → `Pipeline(StandardScaler → clasificador)` → **SVM (RBF) vs. Random Forest**, optimizados con `RepeatedStratifiedKFold` y comparados con **Wilcoxon** pareado.
 
+## Plan A sobre el diagrama de la pizarra
+
+El plan sigue paso a paso el diagrama visto en clase ([diagrama-pipeline.html](diagrama-pipeline.html)):
+
+| # | Paso del diagrama | Qué hacemos | Fase | Ítem de la rúbrica |
+| --- | --- | --- | --- | --- |
+| 1 | **Datos** (cilindro) | 850 fotos de v2, a color, 5 especies. Antes, EDA. | 0, 1 | 2 (EDA) |
+| 2 | **Feature extraction**: a) clásica / **b) transfer learning** | b) ResNet50 preentrenada (plan B: CLIP). La opción a) (píxeles → PCA) solo como contraste en el t-SNE. | 2 | 3 |
+| 3 | **emb / vector** | Un vector de 2048 números por foto, guardado en `.npy` | 2 | 3 |
+| 4 | **Feature selection\*** (solo tabular) | Se omite y se justifica: son imágenes con transfer learning | 2 | 4 |
+| 5 | **Modelos** + curva de optimización | `Pipeline(StandardScaler → SVM / RF)`; grid search y gráfica de score vs. hiperparámetro | 3, 4 | 7, 5 |
+| 5 | Barras "→ Target" (folds) | `RepeatedStratifiedKFold` 10×10; la target es la especie | 4, 5 | 5, 6 |
+
+**Fuera del diagrama, pero exigido por la rúbrica:** comparación estadística (fase 5, ítem 6), evaluación final en test (fase 6), t-SNE (fase 7, ítem 8) y texto/cierre (fase 8, ítems 1, 9–11). El experimento color vs. gris (fase 7b) es extra.
+
 ## El dataset (v2)
 
 | | |
@@ -139,5 +154,9 @@ El ítem 9 (idioma) se cubre con una revisión final de todo el texto.
 
 ## Plan B (si hace falta)
 
-- Cambiar el backbone (EfficientNet-B0 o DINOv2 ViT-S/14) manteniendo el resto del pipeline.
-- Usar el dataset segmentado (`classificador_imagem_segmentada.v1i`) para ver si quitar el fondo ayuda.
+Si ResNet50 rinde mal, se **cambia el modelo preentrenado** y se mantiene el resto del pipeline (mismo dataset v2, mismos folds, mismos clasificadores):
+
+1. **CLIP** (ViT-B/32, embedding de 512 dims): es el que aparece en la pizarra de clase.
+2. EfficientNet-B0 o DINOv2 ViT-S/14 como siguientes opciones.
+
+Ya **no** se considera el dataset "segmentado" como plan B: conserva el fondo y en la práctica es v2 en escala de grises con 50 fotos menos (ver [00-proyecto.md](00-proyecto.md)). La pregunta del gris ya la cubre la fase 7b.

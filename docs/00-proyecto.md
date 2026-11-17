@@ -45,7 +45,7 @@ Exportaciones de Roboflow en formato *multiclass* (carpetas `train/ valid/ test/
 
 Ninguna versión trae data augmentation de Roboflow. Todas usan resize con *stretch* (se deforma la relación de aspecto).
 
-**Decisión:** se usa **v2** (color) — ver [plan-a.md](plan-a.md). v3/v4 no permiten evaluar 2 de las 5 clases; la segmentada queda como plan B.
+**Decisión:** se usa **v2** (color) — ver [plan-a.md](plan-a.md). v3/v4 no permiten evaluar 2 de las 5 clases. La segmentada no se usa como dataset principal: conserva el fondo y es, en la práctica, v2 en grises con 50 fotos menos. El plan B es cambiar el modelo preentrenado (CLIP).
 
 **Verificado (v2):** el número del nombre de archivo (`100_jpg.rf.<hash>`) se repite entre especies distintas, pero cada par (número, especie) aparece una sola vez. No hay duplicados exactos ni imágenes compartidas entre train/valid/test, así que no hay fuga de datos. Detalle en la [bitácora](bitacora.md).
 

@@ -16,6 +16,12 @@ Registro cronológico de lo que se hizo en el proyecto: qué salió bien, qué s
 
 ---
 
+## 2026-11-17 — Documento: el pipeline paso a paso
+
+**Hecho:** se creó [explicacion-pipeline.md](explicacion-pipeline.md), que recorre el diagrama de la pizarra paso a paso (datos → feature extraction → embedding → feature selection → modelos) y luego los pasos de la rúbrica que no están en el diagrama (comparación, test, t-SNE, color vs. gris). Cada paso incluye qué es, qué hicimos, por qué, resultados y figuras. Cierra con una tabla resumen para una diapositiva.
+
+---
+
 ## 2026-11-17 — Fase 8: textos, referencias y README
 
 **Hecho:**

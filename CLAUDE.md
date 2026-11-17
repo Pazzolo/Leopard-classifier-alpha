@@ -8,7 +8,7 @@ Instrucciones para Claude Code (y referencia para el grupo) al trabajar en este 
 - Commits pequeños y enfocados, con mensajes descriptivos en español.
 - Se trabaja directamente sobre `main`.
 - **Push:** solo cuando el usuario lo pida.
-- Nunca commitear datasets ni archivos pesados: `classificador_*/` y `zips/` quedan fuera de git (ver `.gitignore`).
+- Los datasets se versionan **solo como zips** en `zips/`. Las carpetas descomprimidas `classificador_*/` quedan fuera de git (ver `.gitignore`).
 
 ## Documentación
 

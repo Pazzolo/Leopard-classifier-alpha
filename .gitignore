@@ -1,4 +1,4 @@
-# Datasets (exportaciones de Roboflow) y sus zips — demasiado pesados para git
+# Datasets descomprimidos (los zips en zips/ sí se versionan)
 classificador_*/
 
 # macOS
@@ -10,4 +10,3 @@ __pycache__/
 .ipynb_checkpoints/
 .venv/
 venv/
-zips/

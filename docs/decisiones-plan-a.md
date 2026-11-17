@@ -214,6 +214,22 @@ foto (224×224, normalizada con media/std de ImageNet) → ResNet50 → vector d
 
 **Limitación que hay que saber explicar:** los 100 folds no son totalmente independientes (comparten datos de entrenamiento), así que el p-valor tiende a ser optimista. Es una limitación conocida del enfoque que pide la rúbrica.
 
+**Resultados (F1 macro, CV 10×10):** SVM 0.775 ± 0.040 vs. RF 0.710 ± 0.047. Diferencia media **+0.066**, el SVM gana en **93/100 folds**.
+
+| Test | Resultado | Conclusión (α = 0.05) |
+| --- | --- | --- |
+| Shapiro–Wilk (normalidad de las diferencias) | p = 0.20 | No se rechaza la normalidad |
+| **Wilcoxon pareado** | W = 58, **p = 2.2 × 10⁻¹⁷** | Se rechaza H₀ |
+| t-test corregido (Nadeau–Bengio) | p = 3.4 × 10⁻⁵ | Se rechaza H₀ |
+
+El SVM gana en todas las métricas, incluidas AUC macro (0.949 vs. 0.928) y micro (0.956 vs. 0.934). Las especies más difíciles son *wiedii*, *pardalis* y *tigrinus*; la más fácil, *P. onca*.
+
+**Pregunta probable:** *Si Shapiro no rechaza la normalidad, ¿por qué no usaron un t-test?*
+→ El Wilcoxon se eligió de antemano porque no depende de ese supuesto. Con normalidad, ambos son válidos, y ambos llevan a la misma conclusión.
+
+**Pregunta probable:** *¿Cómo manejan que los folds no sean independientes?*
+→ Agregamos el t-test corregido de Nadeau y Bengio, que infla la varianza según la proporción test/train de cada fold. El p-valor sube de 10⁻¹⁷ a 10⁻⁵, pero la diferencia sigue siendo significativa.
+
 > **Mensaje clave:** Wilcoxon pareado sobre 100 scores: test no paramétrico, coherente con folds compartidos.
 
 ---

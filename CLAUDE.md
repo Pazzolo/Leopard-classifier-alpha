@@ -8,6 +8,10 @@ Instrucciones para Claude Code (y referencia para el grupo) al trabajar en este 
 - Commits pequeños y enfocados, con mensajes descriptivos en español.
 - Se trabaja directamente sobre `main`.
 - **Push:** solo cuando el usuario lo pida.
+
+## Avance del trabajo
+
+- Claude avanza de una fase del plan a la siguiente **sin esperar confirmación**, salvo que haya una decisión que le corresponda al usuario o al grupo, o algo que haya salido mal.
 - Los datasets se versionan **solo como zips** en `zips/`. Las carpetas descomprimidas `classificador_*/` quedan fuera de git (ver `.gitignore`).
 
 ## Documentación

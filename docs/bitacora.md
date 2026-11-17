@@ -16,6 +16,30 @@ Registro cronológico de lo que se hizo en el proyecto: qué salió bien, qué s
 
 ---
 
+## 2026-11-17 — Fase 5: comparación estadística SVM vs. Random Forest
+
+**Hecho:** sección 8 de la notebook. Ambos modelos optimizados evaluados con el mismo CV 10×10 y 7 métricas, boxplot, scores pareados, Shapiro, Wilcoxon, t-test corregido de Nadeau–Bengio y curvas ROC one-vs-rest. Figuras: `comparacion_boxplot`, `comparacion_pareada`, `roc_cv`. Además se agregó a `CLAUDE.md` que Claude avanza entre fases sin esperar confirmación.
+
+| Métrica | SVM | RF |
+| --- | --- | --- |
+| F1 macro | **0.775 ± 0.040** | 0.710 ± 0.047 |
+| Accuracy | **0.775** | 0.712 |
+| AUC macro / micro | **0.949 / 0.956** | 0.928 / 0.934 |
+
+**✅ Bien:**
+- SVM gana en todas las métricas y en 93/100 folds. Wilcoxon p = 2.2e-17; t corregido p = 3.4e-5 → significativo con ambos.
+- Rápido: 0.6 min (SVM) + 1.8 min (RF).
+- Especie más fácil: *P. onca* (AUC 0.995); más difíciles: *wiedii*, *pardalis*, *tigrinus*.
+
+**❌ Observaciones:**
+- Shapiro (p = 0.20) no rechaza normalidad, así que el t-test pareado también habría sido válido. Se dejó documentado por qué se mantiene Wilcoxon (elegido a priori).
+- La brecha entre AUC (~0.95) y F1 (~0.78) indica que el modelo ordena bien pero la clase top no siempre es la correcta.
+- Las especies difíciles (*pardalis*, *wiedii*) son las que tienen ~50 % de fotos infrarrojas. Revisarlo en la matriz de confusión de la fase 6.
+
+**⏭️ Pendiente:** fase 6 (evaluación final en test), fase 7 (t-SNE), fase 7b (color vs. gris), fase 8 (textos).
+
+---
+
 ## 2026-11-17 — Fases 3–4: pipelines y optimización de hiperparámetros
 
 **Hecho:** secciones 6 (pipelines) y 7 (optimización) de la notebook, ejecutadas en local con CV 10×10 y F1 macro. Resultados guardados en `outputs/cv/` (caché) y figuras en `outputs/figures/` (`opt_svm_C_gamma`, `opt_rf_depth_features`, `curvas_aprendizaje`, `opt_svm_optuna`).

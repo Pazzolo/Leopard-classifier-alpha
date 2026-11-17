@@ -113,12 +113,15 @@ El ítem 9 (idioma) se cubre con una revisión final de todo el texto.
 Empates resueltos eligiendo el modelo más simple (menor `C`; menor `max_depth`). Curvas de aprendizaje: F1 train = 1.0 en ambos y la validación sigue subiendo con más datos → varianza alta; más imágenes ayudarían.
 
 ### Fase 5 — Comparación estadística (3.5)
-- [ ] `cross_validate` de los 2 mejores pipelines con el **mismo** `RepeatedStratifiedKFold(10, 10, random_state=42)` y `scoring` = accuracy, precision_macro, recall_macro, f1_macro, f1_weighted, roc_auc_ovr (macro).
-- [ ] AUC micro: con `cross_val_predict(method="predict_proba")` + `label_binarize`.
-- [ ] Tabla de media ± std de todas las métricas por modelo.
-- [ ] Boxplot de los 100 F1 macro de cada modelo.
-- [ ] H0: no hay diferencia en F1 macro. `scipy.stats.wilcoxon(f1_svm, f1_rf)` → estadístico, p-valor, conclusión.
-- [ ] Mencionar la limitación: los folds de un repeated CV no son independientes (el test es optimista). Saber explicarlo en la defensa.
+- [x] `cross_validate` de los 2 mejores pipelines con el **mismo** `RepeatedStratifiedKFold(10, 10, random_state=42)` y `scoring` = accuracy, precision_macro, recall_macro, f1_macro, f1_weighted, roc_auc_ovr (macro).
+- [x] AUC micro: con `cross_val_predict(method="predict_proba")` + `label_binarize`.
+- [x] Tabla de media ± std de todas las métricas por modelo.
+- [x] Boxplot de los 100 F1 macro de cada modelo.
+- [x] H0: no hay diferencia en F1 macro. `scipy.stats.wilcoxon(f1_svm, f1_rf)` → estadístico, p-valor, conclusión.
+- [x] Mencionar la limitación: los folds de un repeated CV no son independientes (el test es optimista). Saber explicarlo en la defensa.
+- [x] *Agregado:* t-test corregido de Nadeau–Bengio como chequeo de robustez, Shapiro–Wilk sobre las diferencias y curvas ROC (one-vs-rest, micro y macro) con `cross_val_predict` en un 10-fold.
+
+**Resultado:** SVM > RF en todas las métricas. F1 macro 0.775 vs. 0.710 (+0.066; SVM gana 93/100 folds). Wilcoxon p = 2.2e-17; t corregido p = 3.4e-5 → diferencia significativa.
 
 ### Fase 6 — Evaluación final en test
 - [ ] Reentrenar ambos mejores pipelines en los 765 de desarrollo y evaluar **una vez** en los 85 de test.

@@ -16,6 +16,20 @@ Registro cronológico de lo que se hizo en el proyecto: qué salió bien, qué s
 
 ---
 
+## 2026-11-17 — Diagrama del pipeline (pizarra de clase)
+
+**Hecho:** se replicó en HTML el diagrama de la pizarra: [diagrama-pipeline.html](diagrama-pipeline.html). Flujo: datos → feature extraction (a) clásica / (b) transfer learning → embedding → feature selection* (solo tabular) → modelos (curva de optimización + k-fold). Lo del Plan A está marcado en verde y hay una tabla pizarra vs. Plan A.
+
+**✅ Bien:** la pizarra coincide con el Plan A: transfer learning, feature selection omitida para imágenes y optimización con k-fold.
+
+**❌ Dudas de lectura:**
+- La pizarra dice **CLIP** como modelo preentrenado; el Plan A usa **ResNet50**.
+- Las barras verticales con "→ Target" se interpretaron como los folds del CV (no es seguro).
+
+**⏭️ Pendiente:** decidir si se cambia ResNet50 por CLIP (o se usan ambos y se comparan).
+
+---
+
 ## 2026-11-17 — Verificación por píxeles: las 4 versiones son las mismas fotos
 
 **Hecho:** se compararon los píxeles de **todas** las fotos emparejadas (mismo número y especie) entre las 4 versiones, usando miniaturas de 32×32 en escala de grises y correlación. Se tomaron 200 pares al azar como referencia.

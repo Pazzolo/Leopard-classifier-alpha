@@ -269,7 +269,7 @@ Estimación previa para **Colab gratuito** (2 núcleos de CPU + GPU T4). Son nú
 2. **Problema y motivación** → §1
 3. **Dataset:** por qué v2 + distribución de clases → §2
 4. **EDA:** grid de imágenes, balance → (resultados de la notebook)
-5. **Metodología general:** diagrama del pipeline completo
+5. **Metodología general:** diagrama del pipeline completo → [diagrama-pipeline.html](diagrama-pipeline.html)
    `foto → ResNet50 → 2048 features → StandardScaler → SVM / RF`
 6. **Transfer learning con ResNet50** → §4
 7. **Partición de datos y validación 10×10** → §3, §8

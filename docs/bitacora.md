@@ -16,6 +16,29 @@ Registro cronológico de lo que se hizo en el proyecto: qué salió bien, qué s
 
 ---
 
+## 2026-11-17 — Fase 7b: ¿importa el color?
+
+**Hecho:** sección 11 de la notebook. Embeddings ResNet50 de v2 convertida a gris (6.3 s), SVM reoptimizado en gris (7.4 min; mejor `C=10`, `gamma=1e-4`, F1 0.767), comparación pareada en el mismo CV 10×10 con F1 por fold separado en fotos a color e infrarrojas, F1 por especie y chequeo con la exportación gris de Roboflow (720 fotos en común). Figura: `color_vs_gris`.
+
+| Subconjunto | Color | Gris | Δ | Wilcoxon p | t corr. p |
+| --- | --- | --- | --- | --- | --- |
+| Todas | 0.775 | 0.767 | +0.008 | 0.022 | 0.54 |
+| Fotos a color | 0.794 | 0.768 | +0.026 | 1.7e-5 | 0.16 |
+| Infrarrojas | 0.650 | 0.684 | −0.034 | 0.0012 | 0.31 |
+
+**✅ Bien:**
+- Respuesta clara y con matices: **el color aporta poco en total**; ayuda en fotos diurnas (*wiedii* +0.09, *tigrinus* +0.06) y estorba en las nocturnas.
+- El gris de Roboflow coincide con el gris en código (0.763 vs. 0.771) → el experimento no depende de cómo se convierte.
+
+**❌ Observaciones:**
+- Wilcoxon y t corregido **discrepan** en todos los subconjuntos (Wilcoxon significativo, t corregido no). Se reporta como efecto no robusto; aquí sí importa la limitación de folds no independientes.
+- Los F1 de fotos infrarrojas por fold son muy ruidosos (~24 fotos por fold, std 0.11).
+- No se evaluó en test (85 fotos, 34 infrarrojas): sin poder estadístico.
+
+**⏭️ Pendiente:** fase 8 (introducción, conclusiones, referencias IEEE, ortografía, README).
+
+---
+
 ## 2026-11-17 — Fases 6–7: evaluación final en test y t-SNE
 
 **Hecho:** secciones 9 (test) y 10 (t-SNE) de la notebook. Figuras: `test_matrices_confusion`, `test_roc`, `tsne_resnet_vs_pixeles`, `tsne_resnet_especie_y_tipo`.

@@ -341,6 +341,23 @@ Estimación previa para **Colab gratuito** (2 núcleos de CPU + GPU T4). Son nú
 
 > **Mensaje clave:** experimento controlado donde solo cambia el color: mismas fotos, mismos folds, mismo modelo, test de Wilcoxon pareado.
 
+**Resultados (SVM, CV 10×10, F1 macro):**
+
+| Subconjunto | Color | Gris | Diferencia | Wilcoxon p | t corregido p |
+| --- | --- | --- | --- | --- | --- |
+| Todas las fotos | 0.775 | 0.767 | +0.008 | 0.022 | 0.54 |
+| Solo fotos a color | 0.794 | 0.768 | +0.026 | 1.7 × 10⁻⁵ | 0.16 |
+| Solo fotos infrarrojas | 0.650 | 0.684 | −0.034 | 0.0012 | 0.31 |
+
+- **En total el color casi no importa** (+0.008, no robusto según el t corregido): manda el patrón de manchas.
+- **De día ayuda, de noche estorba:** en fotos a color gana el color (sobre todo *wiedii* +0.09 y *tigrinus* +0.06); en infrarrojas gana el gris, porque al pasar todo a gris las fotos nocturnas dejan de ser un grupo aparte.
+- El gris de Roboflow da lo mismo que el gris hecho en código (0.763 vs. 0.771).
+
+> **Mensaje clave (resultado):** el color aporta poco en total. Ayuda en fotos diurnas y estorba en las nocturnas: la información principal es el patrón de manchas.
+
+**Pregunta probable:** *El Wilcoxon da significativo en total (p = 0.02). ¿Por qué dicen que el color no importa?*
+→ Porque el t corregido, que tiene en cuenta el solapamiento entre folds, da p = 0.54. La diferencia es de 0.008, menos de un punto de F1. Es estadísticamente frágil y prácticamente irrelevante.
+
 **Pregunta probable:** *¿Por qué replicar el gris a 3 canales?*
 → La ResNet50 espera 3 canales (RGB). Copiar el canal gris en los 3 mantiene la arquitectura y los pesos preentrenados sin cambios.
 

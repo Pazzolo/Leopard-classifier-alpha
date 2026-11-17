@@ -141,16 +141,18 @@ Empates resueltos eligiendo el modelo más simple (menor `C`; menor `max_depth`)
 **Pregunta:** ¿el color ayuda a distinguir las especies, o basta con la forma y el patrón de manchas?
 
 **Diseño (comparación controlada: solo cambia el color):**
-- [ ] **Versión gris = v2 convertida en código** (`transforms.Grayscale(num_output_channels=3)` antes de la ResNet). Mismas 850 fotos, mismos splits y mismo pipeline que la versión a color.
-- [ ] Extraer embeddings ResNet50 de la versión gris → `X_dev_gray`, `X_test_gray` (~1 min en GPU).
-- [ ] Reoptimizar el SVM sobre los embeddings grises con el mismo grid (es barato), para no favorecer al color con hiperparámetros ajustados para él.
-- [ ] `cross_validate` de ambos (color y gris) con el **mismo** `RepeatedStratifiedKFold(10, 10, random_state=42)` → 100 F1 macro pareados.
-- [ ] Wilcoxon pareado, α = 0.05. H0: el color no cambia el F1 macro.
-- [ ] Boxplot color vs. gris y F1 por especie (¿a qué especies afecta más quitar el color?).
-- [ ] **Ojo con las fotos infrarrojas:** el 32 % de v2 ya es gris (más en *pardalis* y *wiedii*). Reportar también el resultado solo sobre las fotos a color, porque al pasar todo a gris se pierde la pista "foto nocturna" y no solo el color.
-- [ ] Evaluación en test (85) de ambos, solo como confirmación.
-- [ ] *Chequeo secundario:* repetir con la exportación gris de Roboflow (`classificador_imagem_segmentada`, 800 fotos en común, emparejadas por número + especie) para ver si coincide.
-- [ ] Opcional: t-SNE de los embeddings grises al lado del de color.
+- [x] **Versión gris = v2 convertida en código** (`transforms.Grayscale(num_output_channels=3)` antes de la ResNet). Mismas 850 fotos, mismos splits y mismo pipeline que la versión a color.
+- [x] Extraer embeddings ResNet50 de la versión gris → `X_dev_gray`, `X_test_gray` (~1 min en GPU).
+- [x] Reoptimizar el SVM sobre los embeddings grises con el mismo grid (es barato), para no favorecer al color con hiperparámetros ajustados para él.
+- [x] `cross_validate` de ambos (color y gris) con el **mismo** `RepeatedStratifiedKFold(10, 10, random_state=42)` → 100 F1 macro pareados.
+- [x] Wilcoxon pareado, α = 0.05. H0: el color no cambia el F1 macro.
+- [x] Boxplot color vs. gris y F1 por especie (¿a qué especies afecta más quitar el color?).
+- [x] **Ojo con las fotos infrarrojas:** el 32 % de v2 ya es gris (más en *pardalis* y *wiedii*). Reportar también el resultado solo sobre las fotos a color, porque al pasar todo a gris se pierde la pista "foto nocturna" y no solo el color.
+- [ ] ~~Evaluación en test (85) de ambos~~ → no se hizo: con 85 fotos (34 infrarrojas) no aporta poder estadístico; se usó el CV.
+- [x] *Chequeo secundario:* repetir con la exportación gris de Roboflow (`classificador_imagem_segmentada`, 800 fotos en común, emparejadas por número + especie) para ver si coincide.
+- [ ] Opcional: t-SNE de los embeddings grises al lado del de color (no hecho).
+
+**Resultado:** color − gris = +0.008 en total (Wilcoxon p = 0.02, t corregido p = 0.54 → efecto mínimo, no robusto); +0.026 en fotos a color; −0.034 en infrarrojas. El color ayuda de día y estorba de noche. Chequeo con el gris de Roboflow: sin diferencia relevante.
 
 **Notas:**
 - No reemplaza al ítem 6 (que compara dos *técnicas de ML*); es una sección extra.

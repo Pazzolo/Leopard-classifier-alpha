@@ -46,6 +46,7 @@ Una sola notebook, `notebooks/clasificador_felideos.ipynb`, con estas secciones 
 8. **Comparación estadística** → [ítem 6](items/06-comparacion-estadistica.md)
 9. **Evaluación final en test**
 10. **t-SNE** → [ítem 8](items/08-tsne.md)
+10b. **Experimento extra: ¿importa el color?** (color vs. escala de grises)
 11. **Conclusiones** → [ítem 11](items/11-conclusiones.md)
 12. **Referencias (IEEE)** → [ítem 10](items/10-referencias.md)
 
@@ -101,6 +102,25 @@ El ítem 9 (idioma) se cubre con una revisión final de todo el texto.
 - [ ] t-SNE 2D de los embeddings ResNet (los 850), color = especie, perplexity ∈ {15, 30, 50}.
 - [ ] Contraste: t-SNE de los píxeles crudos (reducidos a 64×64 + PCA 50) para mostrar lo que aporta el transfer learning.
 - [ ] Interpretar qué especies se solapan y relacionarlo con la matriz de confusión.
+
+### Fase 7b — Experimento extra: ¿importa el color?
+
+**Pregunta:** ¿el color ayuda a distinguir las especies, o basta con la forma y el patrón de manchas?
+
+**Diseño (comparación controlada: solo cambia el color):**
+- [ ] **Versión gris = v2 convertida en código** (`transforms.Grayscale(num_output_channels=3)` antes de la ResNet). Mismas 850 fotos, mismos splits y mismo pipeline que la versión a color.
+- [ ] Extraer embeddings ResNet50 de la versión gris → `X_dev_gray`, `X_test_gray` (~1 min en GPU).
+- [ ] Reoptimizar el SVM sobre los embeddings grises con el mismo grid (es barato), para no favorecer al color con hiperparámetros ajustados para él.
+- [ ] `cross_validate` de ambos (color y gris) con el **mismo** `RepeatedStratifiedKFold(10, 10, random_state=42)` → 100 F1 macro pareados.
+- [ ] Wilcoxon pareado, α = 0.05. H0: el color no cambia el F1 macro.
+- [ ] Boxplot color vs. gris y F1 por especie (¿a qué especies afecta más quitar el color?).
+- [ ] Evaluación en test (85) de ambos, solo como confirmación.
+- [ ] *Chequeo secundario:* repetir con la exportación gris de Roboflow (`classificador_imagem_segmentada`, 800 fotos en común, emparejadas por número + especie) para ver si coincide.
+- [ ] Opcional: t-SNE de los embeddings grises al lado del de color.
+
+**Notas:**
+- No reemplaza al ítem 6 (que compara dos *técnicas de ML*); es una sección extra.
+- No llamarlo "segmentado": esa exportación conserva el fondo (ver [00-proyecto.md](00-proyecto.md)).
 
 ### Fase 8 — Texto y cierre (0.4)
 - [ ] Introducción, conclusiones basadas en resultados, referencias en IEEE, prompts de LLM como comentarios.

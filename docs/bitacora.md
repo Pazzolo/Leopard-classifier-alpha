@@ -16,6 +16,20 @@ Registro cronológico de lo que se hizo en el proyecto: qué salió bien, qué s
 
 ---
 
+## 2026-11-17 — Experimento extra: color vs. escala de grises
+
+**Hecho:** se agregó la Fase 7b a [plan-a.md](plan-a.md) y la §15 a [decisiones-plan-a.md](decisiones-plan-a.md) (más fila de costo y diapositiva 13).
+
+**🧭 Decisiones:**
+- La pregunta es **color vs. escala de grises**, no "segmentado": la carpeta segmentada conserva el fondo.
+- La versión gris se genera **en código desde v2**, para que solo cambie el color. La exportación gris de Roboflow queda como chequeo secundario.
+- Mismos folds (10×10, seed 42), SVM reoptimizado para cada versión, Wilcoxon pareado.
+- Es una sección extra; no reemplaza al ítem 6.
+
+**⏭️ Pendiente:** implementarlo después de las fases principales del Plan A.
+
+---
+
 ## 2026-11-17 — Diferencias entre las 4 carpetas
 
 **Hecho:** se compararon las particiones de las 4 versiones y se actualizó la tabla de [00-proyecto.md](00-proyecto.md#datasets-disponibles).

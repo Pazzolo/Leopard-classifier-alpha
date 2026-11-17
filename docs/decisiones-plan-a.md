@@ -232,6 +232,7 @@ Estimación previa para **Colab gratuito** (2 núcleos de CPU + GPU T4). Son nú
 | Evaluación final en test | 2 entrenamientos | < 1 min |
 | t-SNE (3 perplexities + píxeles crudos) | 850 puntos | ~1–2 min |
 | Optuna (extra) | Límite de tiempo fijado por nosotros | ~10 min |
+| Experimento color vs. gris (extra) | Embeddings grises + búsqueda y CV del SVM | ~10–20 min |
 | **Total con el plan tal como está** | | **≈ 3–5 horas** |
 
 **El cuello de botella es el Random Forest:** cada entrenamiento construye cientos de árboles sobre 2048 características, y la búsqueda lo repite 3.600 veces. Además, una sesión tan larga en Colab gratuito corre el riesgo de desconectarse.
@@ -263,6 +264,36 @@ Estimación previa para **Colab gratuito** (2 núcleos de CPU + GPU T4). Son nú
 
 ---
 
+## 15. Experimento extra: ¿importa el color?
+
+**Qué:** comparar el mismo pipeline (ResNet50 → SVM) con las fotos **a color** y **en escala de grises**.
+
+**Por qué es interesante:** varias especies se distinguen en parte por el tono del pelaje (p. ej. jaguar y ocelote), pero otras casi solo por el patrón de manchas. Responder si el color aporta da una conclusión concreta sobre el problema, no solo sobre los modelos.
+
+**Cómo se controla para que sea justo:**
+
+| Factor | Control |
+| --- | --- |
+| Fotos | Las mismas 850 de v2; la versión gris se genera en código desde v2 |
+| Partición y folds | Mismo `RepeatedStratifiedKFold(10, 10, random_state=42)` → scores pareados |
+| Modelo | Mismo pipeline; el SVM se reoptimiza para cada versión |
+| Resolución | Irrelevante: ambas entran a la ResNet a 224×224 |
+| Test | Wilcoxon pareado sobre los 100 F1 macro, α = 0.05 |
+
+**Por qué no usar la carpeta "segmentada" directamente:** tiene otras 800 fotos, otra partición y, pese al nombre, conserva el fondo. Con ella, la diferencia de score podría deberse a las fotos y no al color. Se usa solo como chequeo secundario.
+
+**Costo:** ~1 min de GPU (embeddings grises) + ~5–15 min de CPU (SVM).
+
+> **Mensaje clave:** experimento controlado donde solo cambia el color: mismas fotos, mismos folds, mismo modelo, test de Wilcoxon pareado.
+
+**Pregunta probable:** *¿Por qué replicar el gris a 3 canales?*
+→ La ResNet50 espera 3 canales (RGB). Copiar el canal gris en los 3 mantiene la arquitectura y los pesos preentrenados sin cambios.
+
+**Pregunta probable:** *¿Esto no es lo mismo que el ítem 6?*
+→ No. El ítem 6 compara dos técnicas de ML con los mismos datos; esto compara dos versiones de los datos con la misma técnica.
+
+---
+
 ## Esquema de diapositivas sugerido
 
 1. **Título:** clasificador de félidos neotropicales
@@ -278,10 +309,11 @@ Estimación previa para **Colab gratuito** (2 núcleos de CPU + GPU T4). Son nú
 10. **Comparación estadística:** boxplot + Wilcoxon → §11
 11. **Resultados en test:** matriz de confusión, ROC → §12
 12. **t-SNE** → §12
-13. **Costo computacional:** tabla de tiempos (reales, una vez medidos) → §13
-14. **Conclusiones**
-15. **Limitaciones y trabajo futuro** → §11 (limitación), §14
-16. **Referencias**
+13. **Experimento extra: ¿importa el color?** boxplot + Wilcoxon → §15
+14. **Costo computacional:** tabla de tiempos (reales, una vez medidos) → §13
+15. **Conclusiones**
+16. **Limitaciones y trabajo futuro** → §11 (limitación), §14
+17. **Referencias**
 
 ---
 

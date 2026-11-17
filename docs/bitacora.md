@@ -16,6 +16,28 @@ Registro cronológico de lo que se hizo en el proyecto: qué salió bien, qué s
 
 ---
 
+## 2026-11-17 — Fase 8: textos, referencias y README
+
+**Hecho:**
+- Notebook: introducción completa (contexto, qué hacemos, resumen), citas [1]–[16] en el texto, sección 12 *Conclusiones* (con limitaciones y trabajo futuro), sección 13 *Uso de IA generativa* con los prompts textuales, y sección 14 *Referencias* en IEEE.
+- Comentario en la primera celda de código que remite a los prompts.
+- `README.md` del repo: descripción, pipeline, resultados, cómo ejecutar (Colab y local) y estructura.
+- La notebook completa corre de principio a fin sin errores (31 s con la caché).
+
+**✅ Bien:** las 16 referencias están citadas en el texto, y todos los ítems de la rúbrica tienen su sección en la notebook.
+
+**❌ Observaciones:**
+- **Prompts de IA:** la rúbrica pide los prompts como comentarios de Python. Se listaron en una sección aparte (sección 13) con una nota en la primera celda de código, porque el código no salió de prompts por celda sino de instrucciones generales. **El grupo debe revisar si eso es suficiente** o si el profesor espera algo más específico.
+- **Idioma (ítem 9):** falta que el grupo revise la ortografía y la redacción.
+
+**⏭️ Pendiente (del grupo):**
+- Revisar la notebook completa (ortografía, ítem 9) y la sección 13.
+- Push a GitHub y prueba en Colab.
+- Armar la presentación con [decisiones-plan-a.md](decisiones-plan-a.md) y las figuras de `outputs/figures/`.
+- Ensayar la defensa: todos deben poder justificar cada decisión.
+
+---
+
 ## 2026-11-17 — Fase 7b: ¿importa el color?
 
 **Hecho:** sección 11 de la notebook. Embeddings ResNet50 de v2 convertida a gris (6.3 s), SVM reoptimizado en gris (7.4 min; mejor `C=10`, `gamma=1e-4`, F1 0.767), comparación pareada en el mismo CV 10×10 con F1 por fold separado en fotos a color e infrarrojas, F1 por especie y chequeo con la exportación gris de Roboflow (720 fotos en común). Figura: `color_vs_gris`.

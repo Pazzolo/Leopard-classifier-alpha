@@ -159,9 +159,9 @@ Empates resueltos eligiendo el modelo más simple (menor `C`; menor `max_depth`)
 - No llamarlo "segmentado": esa exportación conserva el fondo (ver [00-proyecto.md](00-proyecto.md)).
 
 ### Fase 8 — Texto y cierre (0.4)
-- [ ] Introducción, conclusiones basadas en resultados, referencias en IEEE, prompts de LLM como comentarios.
+- [x] Introducción, conclusiones basadas en resultados, referencias en IEEE, prompts de LLM como comentarios.
 - [ ] Revisión de ortografía.
-- [ ] README del repo: descripción, cómo correr la notebook, resultados principales.
+- [x] README del repo: descripción, cómo correr la notebook, resultados principales.
 - [ ] Ensayo de defensa: **cada integrante** debe poder justificar cada fila de la tabla de decisiones.
 
 ## Riesgos y cómo mitigarlos

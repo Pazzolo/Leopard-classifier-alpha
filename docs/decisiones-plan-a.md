@@ -27,13 +27,15 @@ Al final hay un esquema de diapositivas sugerido.
 | **v2** ✅ | 450×450, **color** | Las 5 clases están en train, valid y test; train balanceado |
 | v3 ❌ | 150×150, grises | Valid/test **no tienen** *wiedii* ni *onca* → no se puede evaluar el 40 % de las clases |
 | v4 ❌ | 450×450, grises | Mismo problema que v3 |
-| Segmentada | 640×640, grises | Válida, pero queda como **plan B** |
+| Segmentada | 640×640, grises | Válida, pero queda como **plan B** (y en las muestras revisadas el fondo no está removido) |
 
 **Por qué color:** el color del pelaje es una de las pistas para distinguir especies, y la ResNet50 se entrenó con imágenes a color.
 
 **Datos de v2:** 850 imágenes (train 680 · valid 85 · test 85), ~136 por clase en train.
 
 **Verificación de calidad:** no hay imágenes duplicadas ni compartidas entre splits (se revisó con hash md5), así que no hay **fuga de datos**.
+
+**Las 4 versiones son las mismas ~850 fotos** con distinto procesamiento y distinta partición. Por eso **no se mezclan**: la misma foto podría quedar en train y en test (fuga de datos).
 
 > **Mensaje clave:** se eligió v2 porque es la única versión a color con las 5 especies en todos los splits y sin fuga de datos.
 

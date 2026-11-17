@@ -41,12 +41,14 @@ Exportaciones de Roboflow en formato *multiclass* (carpetas `train/ valid/ test/
 | `classificador_felideos.v2i.multiclass` | 450×450, color | 680 | 85 | 85 | 5 clases en todos los splits; train balanceado (~136/clase) |
 | `classificador_felideos.v3i.multiclass` | 150×150, escala de grises | 767 | 41 | 42 | ⚠️ valid/test **sin** `WIEDII` ni `ONCA`; columna extra `Unlabeled` (1 imagen) |
 | `classificador_felideos.v4i.multiclass` | 450×450, escala de grises | 767 | 41 | 42 | Mismos problemas que v3 |
-| `classificador_imagem_segmentada.v1i.multiclass` | 640×640, escala de grises, imágenes segmentadas | 640 | 80 | 80 | 5 clases en todos los splits |
+| `classificador_imagem_segmentada.v1i.multiclass` | 640×640, escala de grises | 640 | 80 | 80 | 5 clases en todos los splits. ⚠️ Pese al nombre, en las muestras revisadas el fondo **no** está removido |
 
 Ninguna versión trae data augmentation de Roboflow. Todas usan resize con *stretch* (se deforma la relación de aspecto).
 
 **Decisión:** se usa **v2** (color) — ver [plan-a.md](plan-a.md). v3/v4 no permiten evaluar 2 de las 5 clases; la segmentada queda como plan B.
 
 **Verificado (v2):** el número del nombre de archivo (`100_jpg.rf.<hash>`) se repite entre especies distintas, pero cada par (número, especie) aparece una sola vez. No hay duplicados exactos ni imágenes compartidas entre train/valid/test, así que no hay fuga de datos. Detalle en la [bitácora](bitacora.md).
+
+**⚠️ Las 4 versiones son las mismas fotos:** son re-exportaciones del mismo conjunto (~850 fotos) con distinto procesamiento. 849/850 pares (número, especie) coinciden entre versiones, y la inspección visual de la foto #100 (ocelote y tigrillo) muestra la misma imagen en v2, v4 y la segmentada. Cada versión reparte las fotos en splits distintos: 43/85 fotos del test de v2 están en el train de v3/v4, y 66/85 en el train de la segmentada. **Mezclar versiones sin agrupar por foto produce fuga de datos.**
 
 **Plan de trabajo:** ver [plan-a.md](plan-a.md) (usa v2).

@@ -16,6 +16,22 @@ Registro cronológico de lo que se hizo en el proyecto: qué salió bien, qué s
 
 ---
 
+## 2026-11-17 — ¿Mezclar todos los zips? Las versiones son las mismas fotos
+
+**Hecho:** se evaluó la idea de mezclar los 4 datasets y entrenar con todo.
+
+**❌ Problema encontrado:**
+- Las 4 versiones son **las mismas fotos** re-exportadas: 849/850 pares (número, especie) coinciden. Se verificó visualmente con la foto #100 (ocelote y tigrillo): misma imagen en v2, v4 y la segmentada, solo cambia color/escala de grises.
+- Cada versión tiene **otra partición**: 43/85 fotos del test de v2 están en el train de v3/v4 y 66/85 en el train de la segmentada. Ejemplo: tigrillo #100 está en el test de v2 y en el train de la segmentada.
+- Mezclar sin cuidado = **fuga de datos** (scores inflados sin valor).
+- La versión "segmentada" no parece segmentada (el fondo sigue en las 2 muestras revisadas). Falta revisar más.
+
+**🧭 Decisiones:** no se mezcla en el Plan A. Si se hace, será como experimento extra con `StratifiedGroupKFold` agrupando por foto, y opcionalmente con una demo de la mezcla ingenua frente a la agrupada para mostrar la fuga.
+
+**⏭️ Pendiente:** el grupo decide si se agrega el experimento extra.
+
+---
+
 ## 2026-11-17 — Estimación de tiempo de cómputo
 
 **Hecho:** se agregó la §13 *Costo computacional estimado* a [decisiones-plan-a.md](decisiones-plan-a.md), con una diapositiva nueva en el esquema (ahora 16).

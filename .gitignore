@@ -1,0 +1,13 @@
+# Datasets (exportaciones de Roboflow) y sus zips — demasiado pesados para git
+classificador_*/
+
+# macOS
+.DS_Store
+
+# Python / Jupyter
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.venv/
+venv/
+zips/

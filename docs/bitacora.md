@@ -16,6 +16,16 @@ Registro cronológico de lo que se hizo en el proyecto: qué salió bien, qué s
 
 ---
 
+## 2026-11-17 — Relación con la rúbrica en los HTML de estudio
+
+**Hecho:** en [explicacion-pipeline.html](explicacion-pipeline.html) y [estudio-codigo.html](estudio-codigo.html) se agregó:
+- Una tabla general *Cómo se cubre la rúbrica*: los 11 ítems, puntos, dónde se cubren en la notebook, estado y la fórmula de la nota.
+- Un recuadro por sección: ítem, puntos, qué pide la rúbrica y cómo lo cumplimos (✅ cumplido, ➖ no aplica justificado, ⭐ extra). El experimento de color se marca como fuera de la rúbrica.
+
+**❌ Corregido:** el resaltado de código de `estudio-codigo.html` mostraba texto basura (`class="c">`) en las líneas con comentario al final, porque el resaltado de palabras clave se aplicaba sobre el HTML del comentario. Se separó el código del comentario antes de resaltar y se regeneró la página.
+
+---
+
 ## 2026-11-17 — Guía de estudio del código
 
 **Hecho:** [estudio-codigo.html](estudio-codigo.html). Recorre la notebook en orden (12 secciones: mapa, configuración, carga, EDA, extracción, pipelines, optimización, comparación, test, t-SNE, color vs. gris, glosario) con fragmentos de código reales, qué hace cada línea importante, las decisiones, el resultado y preguntas de defensa desplegables con su respuesta.

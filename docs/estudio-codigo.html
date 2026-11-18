@@ -66,14 +66,53 @@ th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--lin
 th { color: var(--muted); font-weight: 600; }
 footer { margin-top: 40px; color: var(--muted); font-size: .85rem; }
 footer a { color: var(--ours); }
+
+  .rubrica { border: 2px solid var(--ours); border-radius: 12px; padding: 12px 14px; margin: 12px 0 16px; background: var(--surface); }
+  .rubrica.extra { border-color: var(--line); border-style: dashed; }
+  .rb-head { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 6px; }
+  .rb-tag { font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--ours); font-weight: 700; }
+  .rubrica.extra .rb-tag { color: var(--muted); }
+  .rb-item { font-weight: 700; }
+  .rb-pts { margin-left: auto; background: var(--ours); color: var(--surface); border-radius: 99px; padding: 1px 10px; font-size: .85rem; font-weight: 700; white-space: nowrap; }
+  .rubrica.extra .rb-pts { background: var(--muted); }
+  .rb-pide { color: var(--muted); font-size: .9rem; margin: 0 0 6px; }
+  ul.rb-list { list-style: none; padding-left: 0; margin: 0; }
+  ul.rb-list li { padding-left: 24px; position: relative; margin: 4px 0; font-size: .93rem; }
+  ul.rb-list li::before { position: absolute; left: 0; }
+  ul.rb-list li.ok::before { content: "✅"; }
+  ul.rb-list li.na::before { content: "➖"; }
+  ul.rb-list li.plus::before { content: "⭐"; }
+  ul.rb-list li.warn::before { content: "⚠️"; }
+  .rb-total td { font-weight: 700; border-top: 2px solid var(--ink); }
+  .rb-nota { color: var(--muted); font-size: .88rem; margin-top: 8px; }
 </style>
 </head>
 <body>
 <main>
   <h1>Guía de estudio: el código y el proceso</h1>
   <p class="sub">Recorrido por la notebook en orden: fragmentos de código reales, qué hace cada línea importante, por qué se decidió así, el resultado y preguntas probables de la defensa (clic para ver la respuesta).</p>
-  <nav class="pasos"><a href="#mapa">Mapa de la notebook</a><a href="#setup">Configuración del entorno</a><a href="#datos">Carga de datos</a><a href="#eda">EDA</a><a href="#extraccion">Feature extraction con ResNet50</a><a href="#pipelines">Pipelines y validación cruzada</a><a href="#optimizacion">Optimización de hiperparámetros</a><a href="#comparacion">Comparación estadística</a><a href="#test">Evaluación final en test</a><a href="#tsne">t-SNE</a><a href="#color">Experimento: ¿importa el color?</a><a href="#glosario">Glosario rápido</a></nav>
-  <section class="card paso" id="mapa"><h2>Mapa de la notebook</h2>
+  <nav class="pasos"><a href="#rubrica">Rúbrica</a><a href="#mapa">Mapa de la notebook</a><a href="#setup">Configuración del entorno</a><a href="#datos">Carga de datos</a><a href="#eda">EDA</a><a href="#extraccion">Feature extraction con ResNet50</a><a href="#pipelines">Pipelines y validación cruzada</a><a href="#optimizacion">Optimización de hiperparámetros</a><a href="#comparacion">Comparación estadística</a><a href="#test">Evaluación final en test</a><a href="#tsne">t-SNE</a><a href="#color">Experimento: ¿importa el color?</a><a href="#glosario">Glosario rápido</a></nav>
+  <section class="card paso" id="rubrica">
+<h2>Cómo se cubre la rúbrica</h2>
+<p class="lead">Cada ítem se evalúa por separado: <b>nota = puntos × % del criterio</b>. El % depende de la implementación (completa/parcial) <b>y</b> de la defensa (excelente/regular/insuficiente): una implementación completa con defensa insuficiente vale solo 25 %.</p>
+<div class="scroll"><table>
+<thead><tr><th>#</th><th>Ítem</th><th>Pts</th><th>Dónde se cubre (notebook)</th><th>Estado</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>Introducción</td><td>0.1</td><td>§1: contexto, qué hacemos, resumen</td><td>✅</td></tr>
+<tr><td>2</td><td>EDA</td><td>0.6</td><td>§3: balance, grid, resolución, normalización, infrarrojas, fuga</td><td>✅</td></tr>
+<tr><td>3</td><td>Feature Extraction</td><td>0.25</td><td>§4: ResNet50 → vector de 2048</td><td>✅</td></tr>
+<tr><td>4</td><td>Feature Selection</td><td>0.25</td><td>§5: omitida y justificada</td><td>✅</td></tr>
+<tr><td>5</td><td>Optimización de hiperparámetros</td><td><b>3.5</b></td><td>§7: GridSearch 10×10, gráficas, curvas de aprendizaje, Optuna</td><td>✅</td></tr>
+<tr><td>6</td><td>Comparación estadística</td><td><b>3.5</b></td><td>§8–9: métricas, Wilcoxon, ROC, test</td><td>✅</td></tr>
+<tr><td>7</td><td>Pipelines</td><td>0.5</td><td>§6: <code>StandardScaler → clasificador</code></td><td>✅</td></tr>
+<tr><td>8</td><td>t-SNE</td><td>1</td><td>§10: 2D, color = especie</td><td>✅</td></tr>
+<tr><td>9</td><td>Idioma</td><td>0.1</td><td>Toda la notebook</td><td>⚠️ revisión del grupo</td></tr>
+<tr><td>10</td><td>Referencias</td><td>0.1</td><td>§14: 16 referencias IEEE citadas en el texto; prompts de IA en §13</td><td>✅ <span class="rb-nota">(confirmar formato de prompts)</span></td></tr>
+<tr><td>11</td><td>Conclusiones</td><td>0.1</td><td>§12: basadas en resultados, con limitaciones y trabajo futuro</td><td>✅</td></tr>
+<tr class="rb-total"><td></td><td>Total</td><td>10</td><td></td><td></td></tr>
+</tbody></table></div>
+<p class="rb-nota">Los ítems 5 y 6 valen 7 de los 10 puntos. La defensa es obligatoria para todos los integrantes: quien no se presente obtiene 0.</p>
+</section><section class="card paso" id="mapa"><h2>Mapa de la notebook</h2>
 <p class="lead">La notebook <code>notebooks/clasificador_felideos.ipynb</code> sigue el diagrama de la pizarra y luego cubre lo que pide la rúbrica. Esta guía la recorre en el mismo orden.</p>
 <div class="scroll"><table>
 <thead><tr><th>Sección</th><th>Qué hace</th><th>Ítem rúbrica</th><th>Paso del diagrama</th></tr></thead>
@@ -153,13 +192,13 @@ df[&quot;y&quot;] = df[&quot;especie&quot;].map({c: i <span class="k">for</span>
 </ul>
 <p>Resultado: una tabla <code>df</code> de 850 filas con <code>ruta</code>, <code>especie</code>, <code>split</code> e <code>y</code>. Todo lo demás usa esta tabla, en este orden.</p>
 </section><section class="card paso" id="eda"><h2>3 · EDA</h2>
-<p class="lead">La rúbrica pide responder: ¿balanceada?, ¿normalizada?, ¿estacionalidad?, ¿skewness? y, para imágenes, distribución de labels, grid y resolución.</p>
+<p class="lead">La rúbrica pide responder: ¿balanceada?, ¿normalizada?, ¿estacionalidad?, ¿skewness? y, para imágenes, distribución de labels, grid y resolución.</p><div class="rubrica"><div class="rb-head"><span class="rb-tag">Rúbrica</span><span class="rb-item">Ítem 2 · EDA</span><span class="rb-pts">0.6 pts</span></div><p class="rb-pide"><b>Qué pide:</b> Análisis exploratorio que responda: ¿balanceada?, ¿normalizada?, ¿estacionalidad?, ¿skewness? y, en imágenes, distribución de labels, grid de imágenes e histograma de resolución (H × W).</p><ul class="rb-list"><li class="ok">¿Balanceada? → train sí (135–137 por especie), valid/test no tanto → se justifica F1 macro</li><li class="ok">¿Normalizada? → píxeles en [0, 1], media/std por canal; se normaliza con ImageNet</li><li class="ok">Distribución de labels por split (gráfico de barras)</li><li class="ok">Grid de imágenes (5 por especie)</li><li class="ok">Histograma de resolución H × W (todas 450×450, explicado)</li><li class="na">Estacionalidad y skewness: se explica por qué no aplican a imágenes</li><li class="plus">Extra: detección de fotos infrarrojas (32 %) y verificación de fuga por MD5</li></ul></div>
 <h3>Balance</h3>
 <pre class="code"><code>conteo = pd.crosstab(df[&quot;especie&quot;].map(NOMBRES), df[&quot;split&quot;])[[&quot;train&quot;, &quot;valid&quot;, &quot;test&quot;]]</code></pre>
 <p><code>crosstab</code> cuenta fotos por especie y split. Train está balanceado (135–137); valid/test no tanto (11–23). <b>Consecuencia:</b> se usa <b>F1 macro</b> como métrica.</p>
 
 <h3>Resolución</h3>
-<pre class="code"><code>tamanos = np.array([Image.open(r).size <span class="k">for</span> r <span class="k">in</span> df[&quot;ruta&quot;]])  <span <span class="k">class</span>="c"># (W, H)</span></code></pre>
+<pre class="code"><code>tamanos = np.array([Image.open(r).size <span class="k">for</span> r <span class="k">in</span> df[&quot;ruta&quot;]])  <span class="c"># (W, H)</span></code></pre>
 <p>Abre cada imagen y lee su tamaño. Todas miden 450×450, porque Roboflow las redimensionó con <i>stretch</i>. El histograma tiene una sola barra, y hay que explicar por qué.</p>
 
 <h3>Normalización</h3>
@@ -167,7 +206,7 @@ df[&quot;y&quot;] = df[&quot;especie&quot;].map({c: i <span class="k">for</span>
     &quot;&quot;&quot;Imagen RGB reducida, en [0, 1]. Se reduce solo para acelerar las estadísticas.&quot;&quot;&quot;
     <span class="k">return</span> np.asarray(Image.open(ruta).convert(&quot;RGB&quot;).resize((lado, lado)), dtype=np.float32) / 255.0
 
-pix = np.stack([arreglo(r) <span class="k">for</span> r <span class="k">in</span> train[&quot;ruta&quot;]])          <span <span class="k">class</span>="c"># (N, 112, 112, 3)</span>
+pix = np.stack([arreglo(r) <span class="k">for</span> r <span class="k">in</span> train[&quot;ruta&quot;]])          <span class="c"># (N, 112, 112, 3)</span>
 media, std = pix.mean(axis=(0, 1, 2)), pix.std(axis=(0, 1, 2))</code></pre>
 <ul>
 <li><code>/ 255.0</code>: los píxeles vienen en 0–255; se pasan a [0, 1].</li>
@@ -196,13 +235,13 @@ dup = df[df.duplicated(&quot;md5&quot;, keep=<span class="k">False</span>)]</cod
 <p>El hash MD5 es una "huella" del archivo: dos archivos idénticos tienen el mismo hash. Resultado: 0 duplicados → ninguna foto de test está repetida en train.</p>
 <details class="q"><summary>¿El MD5 detecta una misma foto recortada o con otro brillo?</summary><div>No: solo detecta archivos <b>idénticos byte a byte</b>. Para casi-duplicados habría que comparar contenido (por ejemplo, correlación de miniaturas, que usamos al comparar las 4 versiones del dataset). Dentro de v2 la numeración de archivos es única por especie, lo que refuerza que no hay duplicados.</div></details>
 </section><section class="card paso" id="extraccion"><h2>4 · Feature extraction con ResNet50</h2>
-<p class="lead">El corazón del proyecto: convertir cada foto en un vector de 2048 números usando una red preentrenada.</p>
+<p class="lead">El corazón del proyecto: convertir cada foto en un vector de 2048 números usando una red preentrenada.</p><div class="rubrica"><div class="rb-head"><span class="rb-tag">Rúbrica</span><span class="rb-item">Ítem 4 · Feature Selection</span><span class="rb-pts">0.25 pts</span></div><p class="rb-pide"><b>Qué pide:</b> (sección 5 de la notebook) Una técnica tipo <i>filter</i> en el pipeline. <b>Se puede omitir</b> si se usa transfer learning o el problema es de imágenes o texto.</p><ul class="rb-list"><li class="ok">Omitida, como permite la rúbrica (imágenes + transfer learning)</li><li class="ok">Justificación escrita en la notebook (sección 5)</li></ul></div><div class="rubrica"><div class="rb-head"><span class="rb-tag">Rúbrica</span><span class="rb-item">Ítem 3 · Feature Extraction</span><span class="rb-pts">0.25 pts</span></div><p class="rb-pide"><b>Qué pide:</b> Para datos no estructurados con transfer learning: imagen → modelo preentrenado → vector → algoritmo de ML.</p><ul class="rb-list"><li class="ok">Transfer learning: ResNet50 preentrenada en ImageNet como extractor fijo</li><li class="ok">Imagen → vector de 2048 características → SVM / Random Forest</li><li class="ok">Justificación frente a la opción clásica (píxeles + PCA), confirmada con el t-SNE</li></ul></div>
 <h3>Preprocesamiento de cada foto</h3>
 <pre class="code"><code>IMAGENET_MEDIA, IMAGENET_STD = [0.485, 0.456, 0.406], [0.229, 0.224, 0.225]
 
 <span class="k">def</span> transformacion(gris: bool = <span class="k">False</span>):
     pasos = [transforms.Resize((224, 224))]
-    <span class="k">if</span> gris:  <span <span class="k">class</span>="c"># para el experimento de color: gris replicado en 3 canales</span>
+    <span class="k">if</span> gris:  <span class="c"># para el experimento de color: gris replicado en 3 canales</span>
         pasos.append(transforms.Grayscale(num_output_channels=3))
     pasos += [transforms.ToTensor(), transforms.Normalize(IMAGENET_MEDIA, IMAGENET_STD)]
     <span class="k">return</span> transforms.Compose(pasos)</code></pre>
@@ -249,7 +288,7 @@ X_test, y_test = X_todo[~es_dev], df.loc[~es_dev, &quot;y&quot;].to_numpy()</cod
 </div>
 <details class="q"><summary>¿Qué representan las 2048 características?</summary><div>Son las activaciones de la última capa convolucional, promediadas sobre toda la imagen (<i>global average pooling</i>). Cada una responde a un patrón visual que la red aprendió en ImageNet (texturas, formas, manchas). No tienen nombre individual; lo útil es la combinación.</div></details>
 <details class="q"><summary>¿Por qué ResNet50 y no CLIP, como en la pizarra?</summary><div>Ambos son transfer learning, que es lo que pide el diagrama. ResNet50 es el estándar más documentado y fácil de justificar. CLIP queda como plan B: cambiarlo solo afecta esta sección.</div></details>
-</section><section class="card paso" id="pipelines"><h2>6 · Pipelines y validación cruzada</h2>
+</section><section class="card paso" id="pipelines"><h2>6 · Pipelines y validación cruzada</h2><div class="rubrica"><div class="rb-head"><span class="rb-tag">Rúbrica</span><span class="rb-item">Ítem 7 · Pipelines</span><span class="rb-pts">0.5 pts</span></div><p class="rb-pide"><b>Qué pide:</b> Usar <code>Pipeline</code> de sklearn (o estructura modular en redes neuronales).</p><ul class="rb-list"><li class="ok"><code>Pipeline([StandardScaler, clasificador])</code> para SVM y RF</li><li class="ok">El escalador se ajusta dentro de cada fold → sin fuga de datos</li><li class="ok">El mismo pipeline en optimización, comparación y test</li><li class="plus">Extracción modular en PyTorch (<code>Dataset</code>, <code>DataLoader</code>)</li></ul></div>
 <pre class="code"><code><span class="k">def</span> pipeline(clf):
     <span class="k">return</span> Pipeline([(&quot;scaler&quot;, StandardScaler()), (&quot;clf&quot;, clf)])
 
@@ -271,7 +310,7 @@ METRICA = &quot;f1_macro&quot;</code></pre>
 </ul>
 <details class="q"><summary>¿Qué pasaría si escaláramos todo el dataset antes del CV?</summary><div>Habría <b>fuga de datos</b>: la media y la std usadas para escalar incluirían información de las fotos de validación de cada fold. Dentro del pipeline, el escalador solo ve el entrenamiento de cada fold.</div></details>
 <details class="q"><summary>¿Por qué F1 macro y no accuracy?</summary><div>F1 combina precision y recall. <b>Macro</b> promedia por especie sin ponderar, así un error en una especie con pocas fotos pesa igual que uno en una con muchas. Con valid/test desbalanceados, la accuracy podría ocultar que una especie se clasifica mal.</div></details>
-</section><section class="card paso" id="optimizacion"><h2>7 · Optimización de hiperparámetros</h2>
+</section><section class="card paso" id="optimizacion"><h2>7 · Optimización de hiperparámetros</h2><div class="rubrica"><div class="rb-head"><span class="rb-tag">Rúbrica</span><span class="rb-item">Ítem 5 · Optimización de hiperparámetros</span><span class="rb-pts">3.5 pts</span></div><p class="rb-pide"><b>Qué pide:</b> Optimizar con <i>repeated k-fold CV</i> (nested CV no recomendado); gráfica de optimización de un hiperparámetro y curva de aprendizaje. Extra: Optuna.</p><ul class="rb-list"><li class="ok"><code>GridSearchCV</code> con <code>RepeatedStratifiedKFold</code> 10×10 (sin nested CV)</li><li class="ok">Gráfica de optimización: F1 vs. <code>C</code>/<code>gamma</code> (SVM) y vs. <code>max_depth</code>/<code>max_features</code> (RF)</li><li class="ok">Curvas de aprendizaje de ambos modelos, con diagnóstico de varianza</li><li class="plus">Extra: Optuna (60 pruebas) comparado con la grilla</li></ul></div>
 <h3>Búsqueda en grilla con caché y desempate</h3>
 <pre class="code"><code><span class="k">def</span> buscar(nombre, pipe, grilla, desempate=()):
         gs = GridSearchCV(pipe, grilla, cv=CV, scoring=METRICA, n_jobs=-1, refit=<span class="k">False</span>)
@@ -328,7 +367,7 @@ res_svm, mejor_svm = buscar(&quot;svm&quot;, pipeline(SVC(kernel=&quot;rbf&quot;
 </ul>
 <details class="q"><summary>El mejor C está en el borde de la grilla. ¿No habría que ampliarla?</summary><div>La curva ya es plana desde C = 10: C = 100 y C = 1000 dan el mismo F1. Optuna, que explora valores continuos, tampoco encontró nada mejor.</div></details>
 <details class="q"><summary>¿Qué hacen C y gamma en el SVM?</summary><div><b>C</b> penaliza los errores en entrenamiento: bajo = margen ancho (más sesgo), alto = se ajusta más (más varianza). <b>gamma</b> define el alcance del kernel RBF: bajo = frontera suave, alto = frontera muy local. Con gamma grande (0.01–0.1) cada punto solo se parece a sí mismo y el modelo colapsa (F1 ≈ 0.07).</div></details>
-</section><section class="card paso" id="comparacion"><h2>8 · Comparación estadística</h2>
+</section><section class="card paso" id="comparacion"><h2>8 · Comparación estadística</h2><div class="rubrica"><div class="rb-head"><span class="rb-tag">Rúbrica</span><span class="rb-item">Ítem 6 · Comparación estadística de 2 técnicas</span><span class="rb-pts">3.5 pts</span></div><p class="rb-pide"><b>Qué pide:</b> Test de hipótesis (Wilcoxon o t-test) con repeated k-fold (10×10 por defecto). Métricas: accuracy, AUC, curva ROC, precision, recall, AUC macro/micro, F1 macro y F1 weighted.</p><ul class="rb-list"><li class="ok">SVM vs. Random Forest con el mismo CV 10×10 (100 scores pareados)</li><li class="ok">Test de Wilcoxon pareado (p = 2.2 × 10⁻¹⁷), con H₀, H₁ y α explícitos</li><li class="ok">Accuracy, precision, recall, F1 macro, F1 weighted, AUC macro y AUC micro</li><li class="ok">Curvas ROC one-vs-rest con promedios micro y macro</li><li class="plus">Extra: Shapiro–Wilk y t-test corregido de Nadeau–Bengio (dependencia entre folds)</li></ul></div>
 <h3>Todas las métricas en los mismos folds</h3>
 <pre class="code"><code><span class="k">def</span> auc_micro(y_true, y_proba):
     <span class="k">return</span> roc_auc_score(label_binarize(y_true, classes=range(len(CLASES))), y_proba, average=&quot;micro&quot;)
@@ -374,7 +413,7 @@ METRICAS = {
 <p>Para dibujar una curva hace falta <b>una</b> probabilidad por foto. <code>cross_val_predict</code> con un único 10-fold predice cada foto con un modelo que no la vio. (Con el CV repetido, cada foto se predeciría 10 veces.)</p>
 <details class="q"><summary>Si Shapiro no rechaza la normalidad, ¿por qué no usaron un t-test?</summary><div>El Wilcoxon se eligió <b>de antemano</b> porque no depende de ese supuesto. Con normalidad, ambos son válidos y llegan a la misma conclusión.</div></details>
 <details class="q"><summary>¿Por qué el p del t corregido es mucho mayor que el del Wilcoxon?</summary><div>Porque corrige la dependencia entre folds. Los tests clásicos tratan los 100 folds como independientes y son optimistas. El p pasa de 10⁻¹⁷ a 10⁻⁵, pero sigue muy por debajo de 0.05.</div></details>
-</section><section class="card paso" id="test"><h2>9 · Evaluación final en test</h2>
+</section><section class="card paso" id="test"><h2>9 · Evaluación final en test</h2><div class="rubrica"><div class="rb-head"><span class="rb-tag">Rúbrica</span><span class="rb-item">Ítem 6 · Comparación estadística (complemento)</span><span class="rb-pts">incluido en 3.5</span></div><p class="rb-pide"><b>Qué pide:</b> Las métricas de clasificación de la rúbrica, aplicadas a la evaluación final.</p><ul class="rb-list"><li class="ok">Métricas, matriz de confusión y ROC en el test apartado (85 fotos)</li><li class="plus">Extra: test de McNemar para la diferencia en test (p = 0.55)</li><li class="plus">Extra: acierto por tipo de foto (color vs. infrarroja)</li></ul></div>
 <pre class="code"><code>    <span class="k">for</span> nombre, pipe <span class="k">in</span> MODELOS.items():
         finales[nombre] = pipe.fit(X_dev, y_dev)
         pred_test[nombre] = finales[nombre].predict(X_test)
@@ -383,8 +422,8 @@ METRICAS = {
 <h3>McNemar: ¿la diferencia en test es real?</h3>
 <pre class="code"><code>ok_svm = pred_test[&quot;SVM&quot;] == y_test
 ok_rf = pred_test[&quot;Random Forest&quot;] == y_test
-b = int((ok_svm &amp; ~ok_rf).sum())   <span <span class="k">class</span>="c"># acierta SVM, falla RF</span>
-c = int((~ok_svm &amp; ok_rf).sum())   <span <span class="k">class</span>="c"># falla SVM, acierta RF</span>
+b = int((ok_svm &amp; ~ok_rf).sum())   <span class="c"># acierta SVM, falla RF</span>
+c = int((~ok_svm &amp; ok_rf).sum())   <span class="c"># falla SVM, acierta RF</span>
 p_mcnemar = stats.binomtest(min(b, c), b + c, 0.5).pvalue <span class="k">if</span> b + c &gt; 0 <span class="k">else</span> 1.0</code></pre>
 <ul>
 <li>Solo importan las fotos donde los modelos <b>discrepan</b>: <code>b</code> = 4 (gana SVM) y <code>c</code> = 7 (gana RF).</li>
@@ -396,7 +435,7 @@ p_mcnemar = stats.binomtest(min(b, c), b + c, 0.5).pvalue <span class="k">if</sp
 pred_cv_svm = proba[&quot;SVM&quot;].argmax(axis=1)</code></pre>
 <p>Se reutiliza la columna <code>es_gris</code> del EDA para medir el acierto por tipo de foto: <b>82.7 % en color vs. 67.5 % en infrarrojas</b>.</p>
 <details class="q"><summary>En test gana el Random Forest. ¿No deberían elegirlo?</summary><div>No. Son 3 fotos de 85 y McNemar no lo considera significativo. Además, elegir el modelo mirando el test sería usarlo para selección de modelo, y dejaría de ser una evaluación independiente. La decisión se basa en el CV de 100 folds.</div></details>
-</section><section class="card paso" id="tsne"><h2>10 · t-SNE</h2>
+</section><section class="card paso" id="tsne"><h2>10 · t-SNE</h2><div class="rubrica"><div class="rb-head"><span class="rb-tag">Rúbrica</span><span class="rb-item">Ítem 8 · Visualización con t-SNE</span><span class="rb-pts">1 pt</span></div><p class="rb-pide"><b>Qué pide:</b> t-SNE en 2 dimensiones del espacio de características; en técnicas supervisadas, color = label.</p><ul class="rb-list"><li class="ok">t-SNE 2D de los embeddings ResNet50, color = especie</li><li class="ok">Tres valores de perplexity (15, 30, 50) e interpretación</li><li class="plus">Extra: contraste con píxeles crudos y coloreado por tipo de foto</li></ul></div>
 <pre class="code"><code><span class="k">def</span> tsne_2d(X, perplexity, nombre):
     Z = PCA(n_components=50, random_state=SEED).fit_transform(StandardScaler().fit_transform(X))
     Z = TSNE(n_components=2, perplexity=perplexity, init=&quot;pca&quot;, random_state=SEED).fit_transform(Z)</code></pre>
@@ -408,7 +447,7 @@ pred_cv_svm = proba[&quot;SVM&quot;].argmax(axis=1)</code></pre>
 </ul>
 <div class="res-inline"><b>Resultado:</b> la ResNet50 forma grupos por especie, mientras que los píxeles quedan mezclados. Coloreando por <code>es_gris</code>, las fotos infrarrojas forman su propia isla: la red separa día/noche antes que la especie.</div>
 <details class="q"><summary>¿Las distancias entre grupos del t-SNE significan algo?</summary><div>Con cuidado: t-SNE conserva bien qué puntos son <b>vecinos</b>, pero las distancias entre grupos lejanos y el tamaño de los grupos no son fiables. Por eso se interpreta qué se agrupa, no cuán lejos está.</div></details>
-</section><section class="card paso" id="color"><h2>11 · Experimento: ¿importa el color?</h2>
+</section><section class="card paso" id="color"><h2>11 · Experimento: ¿importa el color?</h2><div class="rubrica extra"><div class="rb-head"><span class="rb-tag">Fuera de la rúbrica</span><span class="rb-item">Experimento extra: color vs. gris</span><span class="rb-pts">sin puntos</span></div><p class="rb-pide"><b>Qué pide:</b> No lo pide la rúbrica. Aporta evidencia propia para las <b>conclusiones</b> (ítem 11) y para la defensa.</p><ul class="rb-list"><li class="plus">Comparación controlada con Wilcoxon y t corregido</li><li class="plus">Alimenta la conclusión 7 de la notebook (el color aporta poco)</li></ul></div>
 <pre class="code"><code>X_gris_todo = embeddings(&quot;resnet50_gris&quot;, gris=<span class="k">True</span>)</code></pre>
 <p>Mismas fotos, pero con <code>transformacion(gris=True)</code>. El SVM se <b>reoptimiza</b> con la misma grilla sobre los vectores grises (mejor: <code>C=10</code>, F1 0.767).</p>
 <pre class="code"><code><span class="k">def</span> evaluar_fold(tr, va, Xa, pa, Xb, pb):

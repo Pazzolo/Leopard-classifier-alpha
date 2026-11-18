@@ -87,6 +87,25 @@
              display: flex; align-items: center; gap: 12px; }
   .divisor::after { content: ""; flex: 1; height: 1px; background: var(--line); }
   footer { margin-top: 40px; color: var(--muted); font-size: .85rem; }
+
+  .rubrica { border: 2px solid var(--ours); border-radius: 12px; padding: 12px 14px; margin: 12px 0 16px; background: var(--surface); }
+  .rubrica.extra { border-color: var(--line); border-style: dashed; }
+  .rb-head { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 6px; }
+  .rb-tag { font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--ours); font-weight: 700; }
+  .rubrica.extra .rb-tag { color: var(--muted); }
+  .rb-item { font-weight: 700; }
+  .rb-pts { margin-left: auto; background: var(--ours); color: var(--surface); border-radius: 99px; padding: 1px 10px; font-size: .85rem; font-weight: 700; white-space: nowrap; }
+  .rubrica.extra .rb-pts { background: var(--muted); }
+  .rb-pide { color: var(--muted); font-size: .9rem; margin: 0 0 6px; }
+  ul.rb-list { list-style: none; padding-left: 0; margin: 0; }
+  ul.rb-list li { padding-left: 24px; position: relative; margin: 4px 0; font-size: .93rem; }
+  ul.rb-list li::before { position: absolute; left: 0; }
+  ul.rb-list li.ok::before { content: "✅"; }
+  ul.rb-list li.na::before { content: "➖"; }
+  ul.rb-list li.plus::before { content: "⭐"; }
+  ul.rb-list li.warn::before { content: "⚠️"; }
+  .rb-total td { font-weight: 700; border-top: 2px solid var(--ink); }
+  .rb-nota { color: var(--muted); font-size: .88rem; margin-top: 8px; }
 </style>
 </head>
 <body>
@@ -220,6 +239,7 @@
   </div>
 
   <nav class="pasos" aria-label="Pasos">
+    <a href="#rubrica">Rúbrica</a>
     <a href="#datos">1 · Datos</a>
     <a href="#extraccion">2 · Feature extraction</a>
     <a href="#embedding">3 · Embedding</a>
@@ -232,10 +252,33 @@
     <a class="extra" href="#resumen">Resumen</a>
   </nav>
 
+  
+<section class="card paso" id="rubrica">
+<h2>Cómo se cubre la rúbrica</h2>
+<p class="lead">Cada ítem se evalúa por separado: <b>nota = puntos × % del criterio</b>. El % depende de la implementación (completa/parcial) <b>y</b> de la defensa (excelente/regular/insuficiente): una implementación completa con defensa insuficiente vale solo 25 %.</p>
+<div class="scroll"><table>
+<thead><tr><th>#</th><th>Ítem</th><th>Pts</th><th>Dónde se cubre (notebook)</th><th>Estado</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>Introducción</td><td>0.1</td><td>§1: contexto, qué hacemos, resumen</td><td>✅</td></tr>
+<tr><td>2</td><td>EDA</td><td>0.6</td><td>§3: balance, grid, resolución, normalización, infrarrojas, fuga</td><td>✅</td></tr>
+<tr><td>3</td><td>Feature Extraction</td><td>0.25</td><td>§4: ResNet50 → vector de 2048</td><td>✅</td></tr>
+<tr><td>4</td><td>Feature Selection</td><td>0.25</td><td>§5: omitida y justificada</td><td>✅</td></tr>
+<tr><td>5</td><td>Optimización de hiperparámetros</td><td><b>3.5</b></td><td>§7: GridSearch 10×10, gráficas, curvas de aprendizaje, Optuna</td><td>✅</td></tr>
+<tr><td>6</td><td>Comparación estadística</td><td><b>3.5</b></td><td>§8–9: métricas, Wilcoxon, ROC, test</td><td>✅</td></tr>
+<tr><td>7</td><td>Pipelines</td><td>0.5</td><td>§6: <code>StandardScaler → clasificador</code></td><td>✅</td></tr>
+<tr><td>8</td><td>t-SNE</td><td>1</td><td>§10: 2D, color = especie</td><td>✅</td></tr>
+<tr><td>9</td><td>Idioma</td><td>0.1</td><td>Toda la notebook</td><td>⚠️ revisión del grupo</td></tr>
+<tr><td>10</td><td>Referencias</td><td>0.1</td><td>§14: 16 referencias IEEE citadas en el texto; prompts de IA en §13</td><td>✅ <span class="rb-nota">(confirmar formato de prompts)</span></td></tr>
+<tr><td>11</td><td>Conclusiones</td><td>0.1</td><td>§12: basadas en resultados, con limitaciones y trabajo futuro</td><td>✅</td></tr>
+<tr class="rb-total"><td></td><td>Total</td><td>10</td><td></td><td></td></tr>
+</tbody></table></div>
+<p class="rb-nota">Los ítems 5 y 6 valen 7 de los 10 puntos. La defensa es obligatoria para todos los integrantes: quien no se presente obtiene 0.</p>
+</section>
+
   <!-- ───────── 1 · DATOS ───────── -->
   <section class="paso card" id="datos">
     <h2><span class="num">1</span>Datos</h2>
-    <p class="lead">El cilindro de la pizarra: el conjunto de entrada. Los tipos posibles son texto, series de tiempo, tabular o imágenes; el nuestro es <b>imágenes</b>.</p>
+    <p class="lead">El cilindro de la pizarra: el conjunto de entrada. Los tipos posibles son texto, series de tiempo, tabular o imágenes; el nuestro es <b>imágenes</b>.</p><div class="rubrica"><div class="rb-head"><span class="rb-tag">Rúbrica</span><span class="rb-item">Ítem 2 · EDA</span><span class="rb-pts">0.6 pts</span></div><p class="rb-pide"><b>Qué pide:</b> Análisis exploratorio que responda: ¿balanceada?, ¿normalizada?, ¿estacionalidad?, ¿skewness? y, en imágenes, distribución de labels, grid de imágenes e histograma de resolución (H × W).</p><ul class="rb-list"><li class="ok">¿Balanceada? → train sí (135–137 por especie), valid/test no tanto → se justifica F1 macro</li><li class="ok">¿Normalizada? → píxeles en [0, 1], media/std por canal; se normaliza con ImageNet</li><li class="ok">Distribución de labels por split (gráfico de barras)</li><li class="ok">Grid de imágenes (5 por especie)</li><li class="ok">Histograma de resolución H × W (todas 450×450, explicado)</li><li class="na">Estacionalidad y skewness: se explica por qué no aplican a imágenes</li><li class="plus">Extra: detección de fotos infrarrojas (32 %) y verificación de fuga por MD5</li></ul></div>
 
     <div class="kpis">
       <div class="kpi"><b>850</b><span>fotos a color, 450×450</span></div>
@@ -286,7 +329,7 @@
   <!-- ───────── 2 · FEATURE EXTRACTION ───────── -->
   <section class="paso card" id="extraccion">
     <h2><span class="num">2</span>Feature extraction</h2>
-    <p class="lead">El embudo de la pizarra: convertir cada foto en números. Dos caminos: <b>a) clásica</b> (píxeles → PCA, HoG, SIFT) o <b>b) transfer learning</b> (una red ya entrenada; la pizarra menciona <b>CLIP</b>).</p>
+    <p class="lead">El embudo de la pizarra: convertir cada foto en números. Dos caminos: <b>a) clásica</b> (píxeles → PCA, HoG, SIFT) o <b>b) transfer learning</b> (una red ya entrenada; la pizarra menciona <b>CLIP</b>).</p><div class="rubrica"><div class="rb-head"><span class="rb-tag">Rúbrica</span><span class="rb-item">Ítem 3 · Feature Extraction</span><span class="rb-pts">0.25 pts</span></div><p class="rb-pide"><b>Qué pide:</b> Para datos no estructurados con transfer learning: imagen → modelo preentrenado → vector → algoritmo de ML.</p><ul class="rb-list"><li class="ok">Transfer learning: ResNet50 preentrenada en ImageNet como extractor fijo</li><li class="ok">Imagen → vector de 2048 características → SVM / Random Forest</li><li class="ok">Justificación frente a la opción clásica (píxeles + PCA), confirmada con el t-SNE</li></ul></div>
 
     <h3>Qué hicimos: opción b, con ResNet50</h3>
     <pre>foto → resize 224×224 → normalizar (ImageNet) → ResNet50 sin su última capa → vector de 2048</pre>
@@ -315,7 +358,7 @@
   <!-- ───────── 3 · EMBEDDING ───────── -->
   <section class="paso card" id="embedding">
     <h2><span class="num">3</span>Embedding (vector)</h2>
-    <p class="lead">"emb" / "vector" en la pizarra: la salida del extractor, una huella numérica de cada foto.</p>
+    <p class="lead">"emb" / "vector" en la pizarra: la salida del extractor, una huella numérica de cada foto.</p><div class="rubrica"><div class="rb-head"><span class="rb-tag">Rúbrica</span><span class="rb-item">Ítem 3 · Feature Extraction (salida)</span><span class="rb-pts">incluido en 0.25</span></div><p class="rb-pide"><b>Qué pide:</b> El vector embedding que alimenta al algoritmo de ML.</p><ul class="rb-list"><li class="ok">Embedding de 2048 dims por foto: X_dev 765 × 2048, X_test 85 × 2048</li><li class="ok">Guardado en disco para no recalcularlo en cada fold</li></ul></div>
 
     <div class="kpis">
       <div class="kpi"><b>2048</b><span>números por foto</span></div>
@@ -338,7 +381,7 @@
   <!-- ───────── 4 · FEATURE SELECTION ───────── -->
   <section class="paso card" id="seleccion">
     <h2><span class="num">4</span>Feature selection <span style="color:var(--accent)">*</span></h2>
-    <p class="lead">Quedarse solo con las características más útiles (p. ej. <code>SelectKBest</code>). En la pizarra lleva un asterisco y la nota <b>"Tabular Data"</b>: solo aplica a datos tabulares.</p>
+    <p class="lead">Quedarse solo con las características más útiles (p. ej. <code>SelectKBest</code>). En la pizarra lleva un asterisco y la nota <b>"Tabular Data"</b>: solo aplica a datos tabulares.</p><div class="rubrica"><div class="rb-head"><span class="rb-tag">Rúbrica</span><span class="rb-item">Ítem 4 · Feature Selection</span><span class="rb-pts">0.25 pts</span></div><p class="rb-pide"><b>Qué pide:</b> Una técnica tipo <i>filter</i> en el pipeline. <b>Se puede omitir</b> si se usa transfer learning o el problema es de imágenes o texto.</p><ul class="rb-list"><li class="ok">Omitida, como permite la rúbrica (imágenes + transfer learning)</li><li class="ok">Justificación escrita en la notebook (sección 5)</li></ul></div>
     <div class="grid2">
       <div class="box res">
         <h4>Qué hicimos</h4>
@@ -357,7 +400,7 @@
   <!-- ───────── 5 · MODELOS ───────── -->
   <section class="paso card" id="modelos">
     <h2><span class="num">5</span>Modelos</h2>
-    <p class="lead">Los algoritmos que aprenden a predecir la especie a partir del vector. Bajo el óvalo, la pizarra dibuja la <b>curva de optimización</b> y las <b>barras "→ Target"</b> (la validación cruzada).</p>
+    <p class="lead">Los algoritmos que aprenden a predecir la especie a partir del vector. Bajo el óvalo, la pizarra dibuja la <b>curva de optimización</b> y las <b>barras "→ Target"</b> (la validación cruzada).</p><div class="rubrica"><div class="rb-head"><span class="rb-tag">Rúbrica</span><span class="rb-item">Ítem 7 · Pipelines</span><span class="rb-pts">0.5 pts</span></div><p class="rb-pide"><b>Qué pide:</b> Usar <code>Pipeline</code> de sklearn (o estructura modular en redes neuronales).</p><ul class="rb-list"><li class="ok"><code>Pipeline([StandardScaler, clasificador])</code> para SVM y RF</li><li class="ok">El escalador se ajusta dentro de cada fold → sin fuga de datos</li><li class="ok">El mismo pipeline en optimización, comparación y test</li><li class="plus">Extracción modular en PyTorch (<code>Dataset</code>, <code>DataLoader</code>)</li></ul></div><div class="rubrica"><div class="rb-head"><span class="rb-tag">Rúbrica</span><span class="rb-item">Ítem 5 · Optimización de hiperparámetros</span><span class="rb-pts">3.5 pts</span></div><p class="rb-pide"><b>Qué pide:</b> Optimizar con <i>repeated k-fold CV</i> (nested CV no recomendado); gráfica de optimización de un hiperparámetro y curva de aprendizaje. Extra: Optuna.</p><ul class="rb-list"><li class="ok"><code>GridSearchCV</code> con <code>RepeatedStratifiedKFold</code> 10×10 (sin nested CV)</li><li class="ok">Gráfica de optimización: F1 vs. <code>C</code>/<code>gamma</code> (SVM) y vs. <code>max_depth</code>/<code>max_features</code> (RF)</li><li class="ok">Curvas de aprendizaje de ambos modelos, con diagnóstico de varianza</li><li class="plus">Extra: Optuna (60 pruebas) comparado con la grilla</li></ul></div>
 
     <h3>Pipeline</h3>
     <pre>StandardScaler → clasificador</pre>
@@ -418,7 +461,7 @@
   <!-- ───────── COMPARACIÓN ───────── -->
   <section class="paso card" id="comparacion">
     <h2><span class="num extra">6</span>Comparación estadística: SVM vs. Random Forest</h2>
-    <p class="lead">Ambos modelos optimizados, evaluados en los <b>mismos 100 folds</b>, con todas las métricas que pide la rúbrica.</p>
+    <p class="lead">Ambos modelos optimizados, evaluados en los <b>mismos 100 folds</b>, con todas las métricas que pide la rúbrica.</p><div class="rubrica"><div class="rb-head"><span class="rb-tag">Rúbrica</span><span class="rb-item">Ítem 6 · Comparación estadística de 2 técnicas</span><span class="rb-pts">3.5 pts</span></div><p class="rb-pide"><b>Qué pide:</b> Test de hipótesis (Wilcoxon o t-test) con repeated k-fold (10×10 por defecto). Métricas: accuracy, AUC, curva ROC, precision, recall, AUC macro/micro, F1 macro y F1 weighted.</p><ul class="rb-list"><li class="ok">SVM vs. Random Forest con el mismo CV 10×10 (100 scores pareados)</li><li class="ok">Test de Wilcoxon pareado (p = 2.2 × 10⁻¹⁷), con H₀, H₁ y α explícitos</li><li class="ok">Accuracy, precision, recall, F1 macro, F1 weighted, AUC macro y AUC micro</li><li class="ok">Curvas ROC one-vs-rest con promedios micro y macro</li><li class="plus">Extra: Shapiro–Wilk y t-test corregido de Nadeau–Bengio (dependencia entre folds)</li></ul></div>
 
     <div class="scroll">
       <table>
@@ -467,7 +510,7 @@
   <!-- ───────── TEST ───────── -->
   <section class="paso card" id="test">
     <h2><span class="num extra">7</span>Evaluación final en test</h2>
-    <p class="lead">Ambos modelos se reentrenan con las 765 fotos de desarrollo y se evalúan <b>una sola vez</b> en las 85 de test.</p>
+    <p class="lead">Ambos modelos se reentrenan con las 765 fotos de desarrollo y se evalúan <b>una sola vez</b> en las 85 de test.</p><div class="rubrica"><div class="rb-head"><span class="rb-tag">Rúbrica</span><span class="rb-item">Ítem 6 · Comparación estadística (complemento)</span><span class="rb-pts">incluido en 3.5</span></div><p class="rb-pide"><b>Qué pide:</b> Las métricas de clasificación de la rúbrica, aplicadas a la evaluación final.</p><ul class="rb-list"><li class="ok">Métricas, matriz de confusión y ROC en el test apartado (85 fotos)</li><li class="plus">Extra: test de McNemar para la diferencia en test (p = 0.55)</li><li class="plus">Extra: acierto por tipo de foto (color vs. infrarroja)</li></ul></div>
     <div class="scroll">
       <table>
         <thead><tr><th></th><th>SVM</th><th>Random Forest</th></tr></thead>
@@ -492,7 +535,7 @@
   <!-- ───────── t-SNE ───────── -->
   <section class="paso card" id="tsne">
     <h2><span class="num extra">8</span>Visualización con t-SNE</h2>
-    <p class="lead">Proyecta los vectores de 2048 dimensiones a 2D intentando conservar qué fotos son vecinas, para <b>ver</b> si las especies forman grupos. Se aplicó a los vectores de la ResNet50 y, como contraste, a los píxeles crudos, con perplexity 15, 30 y 50.</p>
+    <p class="lead">Proyecta los vectores de 2048 dimensiones a 2D intentando conservar qué fotos son vecinas, para <b>ver</b> si las especies forman grupos. Se aplicó a los vectores de la ResNet50 y, como contraste, a los píxeles crudos, con perplexity 15, 30 y 50.</p><div class="rubrica"><div class="rb-head"><span class="rb-tag">Rúbrica</span><span class="rb-item">Ítem 8 · Visualización con t-SNE</span><span class="rb-pts">1 pt</span></div><p class="rb-pide"><b>Qué pide:</b> t-SNE en 2 dimensiones del espacio de características; en técnicas supervisadas, color = label.</p><ul class="rb-list"><li class="ok">t-SNE 2D de los embeddings ResNet50, color = especie</li><li class="ok">Tres valores de perplexity (15, 30, 50) e interpretación</li><li class="plus">Extra: contraste con píxeles crudos y coloreado por tipo de foto</li></ul></div>
     <ol>
       <li><b>Con ResNet50 hay grupos; con píxeles crudos, todo mezclado.</b> Es la justificación visual del transfer learning.</li>
       <li><em>P. onca</em> <b>forma un grupo aparte</b>, coherente con su AUC de 0.995.</li>
@@ -508,7 +551,7 @@
   <!-- ───────── COLOR ───────── -->
   <section class="paso card" id="color">
     <h2><span class="num extra">9</span>Experimento extra: ¿importa el color?</h2>
-    <p class="lead">El mismo pipeline (ResNet50 → SVM) con las fotos <b>a color</b> y con <b>las mismas fotos convertidas a gris</b> en código. Mismos folds, SVM reoptimizado para gris, y F1 calculado aparte para fotos a color e infrarrojas.</p>
+    <p class="lead">El mismo pipeline (ResNet50 → SVM) con las fotos <b>a color</b> y con <b>las mismas fotos convertidas a gris</b> en código. Mismos folds, SVM reoptimizado para gris, y F1 calculado aparte para fotos a color e infrarrojas.</p><div class="rubrica extra"><div class="rb-head"><span class="rb-tag">Fuera de la rúbrica</span><span class="rb-item">Experimento extra: color vs. gris</span><span class="rb-pts">sin puntos</span></div><p class="rb-pide"><b>Qué pide:</b> No lo pide la rúbrica. Aporta evidencia propia para las <b>conclusiones</b> (ítem 11) y para la defensa.</p><ul class="rb-list"><li class="plus">Comparación controlada con Wilcoxon y t corregido</li><li class="plus">Alimenta la conclusión 7 de la notebook (el color aporta poco)</li></ul></div>
     <div class="scroll">
       <table>
         <thead><tr><th>Fotos evaluadas</th><th>Color</th><th>Gris</th><th>Diferencia</th></tr></thead>

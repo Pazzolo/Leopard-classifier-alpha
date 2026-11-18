@@ -85,13 +85,23 @@ footer a { color: var(--ours); }
   ul.rb-list li.warn::before { content: "⚠️"; }
   .rb-total td { font-weight: 700; border-top: 2px solid var(--ink); }
   .rb-nota { color: var(--muted); font-size: .88rem; margin-top: 8px; }
+
+  .ver { display: inline-block; border-radius: 99px; padding: 1px 10px; font-size: .8rem; font-weight: 700; white-space: nowrap; }
+  .ver.ok { background: var(--ours-soft); color: var(--ours); }
+  .ver.no { background: var(--accent-soft); color: var(--accent); }
+  .hip { border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; margin: 12px 0; }
+  .hip h3 { margin: 0 0 6px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .hip dl { display: grid; grid-template-columns: max-content 1fr; gap: 4px 14px; margin: 8px 0 0; font-size: .93rem; }
+  .hip dt { color: var(--muted); font-weight: 600; }
+  .hip dd { margin: 0; }
+  @media (max-width: 560px) { .hip dl { grid-template-columns: 1fr; } .hip dt { margin-top: 6px; } }
 </style>
 </head>
 <body>
 <main>
   <h1>Guía de estudio: el código y el proceso</h1>
   <p class="sub">Recorrido por la notebook en orden: fragmentos de código reales, qué hace cada línea importante, por qué se decidió así, el resultado y preguntas probables de la defensa (clic para ver la respuesta).</p>
-  <nav class="pasos"><a href="#rubrica">Rúbrica</a><a href="#mapa">Mapa de la notebook</a><a href="#setup">Configuración del entorno</a><a href="#datos">Carga de datos</a><a href="#eda">EDA</a><a href="#extraccion">Feature extraction con ResNet50</a><a href="#pipelines">Pipelines y validación cruzada</a><a href="#optimizacion">Optimización de hiperparámetros</a><a href="#comparacion">Comparación estadística</a><a href="#test">Evaluación final en test</a><a href="#tsne">t-SNE</a><a href="#color">Experimento: ¿importa el color?</a><a href="#glosario">Glosario rápido</a></nav>
+  <nav class="pasos"><a href="#rubrica">Rúbrica</a><a href="#hipotesis">Hipótesis</a><a href="#mapa">Mapa de la notebook</a><a href="#setup">Configuración del entorno</a><a href="#datos">Carga de datos</a><a href="#eda">EDA</a><a href="#extraccion">Feature extraction con ResNet50</a><a href="#pipelines">Pipelines y validación cruzada</a><a href="#optimizacion">Optimización de hiperparámetros</a><a href="#comparacion">Comparación estadística</a><a href="#test">Evaluación final en test</a><a href="#tsne">t-SNE</a><a href="#color">Experimento: ¿importa el color?</a><a href="#glosario">Glosario rápido</a></nav>
   <section class="card paso" id="rubrica">
 <h2>Cómo se cubre la rúbrica</h2>
 <p class="lead">Cada ítem se evalúa por separado: <b>nota = puntos × % del criterio</b>. El % depende de la implementación (completa/parcial) <b>y</b> de la defensa (excelente/regular/insuficiente): una implementación completa con defensa insuficiente vale solo 25 %.</p>
@@ -112,7 +122,34 @@ footer a { color: var(--ours); }
 <tr class="rb-total"><td></td><td>Total</td><td>10</td><td></td><td></td></tr>
 </tbody></table></div>
 <p class="rb-nota">Los ítems 5 y 6 valen 7 de los 10 puntos. La defensa es obligatoria para todos los integrantes: quien no se presente obtiene 0.</p>
-</section><section class="card paso" id="mapa"><h2>Mapa de la notebook</h2>
+</section>
+<section class="card paso" id="hipotesis">
+<h2>Hipótesis y diseño experimental</h2>
+<p class="lead"><b>Pregunta de investigación:</b> ¿se pueden distinguir 5 especies de félidos neotropicales, varias con pelajes casi iguales, a partir de solo ~850 fotos, combinando una red preentrenada (transfer learning) con modelos de machine learning clásicos? ¿Qué modelo lo hace mejor, y qué información visual usa?</p>
+
+<div class="hip"><h3>H1 · El SVM supera al Random Forest <span class="ver ok">Confirmada</span></h3><dl><dt>Hipótesis</dt><dd>Sobre los embeddings de ResNet50, un <b>SVM con kernel RBF</b> obtiene mayor F1 macro que un <b>Random Forest</b>, ambos optimizados.</dd><dt>Por qué lo esperábamos</dt><dd>Hay muchas dimensiones (2048) y pocos ejemplos (~690 por fold). El SVM trabaja con distancias en todo el espacio; los árboles dividen por una característica a la vez. Esta hipótesis quedó escrita en el plan <b>antes</b> de correr el experimento.</dd><dt>H₀ / H₁</dt><dd>H₀: no hay diferencia en F1 macro entre SVM y RF. H₁: sí hay diferencia.</dd><dt>Cómo se prueba</dt><dd>Ambos modelos en los <b>mismos 100 folds</b> (CV 10×10) → 100 pares de F1. Test de <b>Wilcoxon pareado</b>, α = 0.05; t-test corregido de Nadeau–Bengio como chequeo. Es el experimento del <b>ítem 6</b> de la rúbrica.</dd><dt>Resultado</dt><dd>SVM 0.775 vs. RF 0.710 (+0.066); el SVM gana en 93/100 folds. Wilcoxon p = 2.2 × 10⁻¹⁷, t corregido p = 3.4 × 10⁻⁵ → <b>se rechaza H₀</b>. En el test de 85 fotos el RF acierta 3 más, pero McNemar p = 0.55 (no significativo).</dd></dl></div>
+
+<div class="hip"><h3>H2 · El transfer learning captura la especie mejor que los píxeles <span class="ver ok">Confirmada (cualitativa)</span></h3><dl><dt>Hipótesis</dt><dd>Los vectores de una ResNet50 preentrenada separan las especies mucho mejor que los píxeles crudos de la imagen.</dd><dt>Por qué lo esperábamos</dt><dd>La red ya aprendió en ImageNet a detectar texturas y patrones (manchas, rayas); los píxeles crudos dependen de la posición, la luz y el fondo.</dd><dt>Cómo se prueba</dt><dd>Visualización <b>t-SNE</b> de ambos espacios (perplexity 15, 30 y 50), coloreada por especie (<b>ítem 8</b>). Es una evaluación visual, no un test estadístico.</dd><dt>Resultado</dt><dd>Con ResNet50 aparecen grupos por especie (<i>P. onca</i> aislada); con píxeles todo queda mezclado. Además, sin optimizar ya se logra F1 ≈ 0.68 (azar = 0.20).</dd></dl></div>
+
+<div class="hip"><h3>H3 · El color ayuda a distinguir las especies <span class="ver no">No se sostiene en total</span></h3><dl><dt>Hipótesis</dt><dd>Quitar el color de las fotos baja el F1 macro del mejor modelo.</dd><dt>Por qué lo pensábamos</dt><dd>El tono del pelaje es una de las pistas que usan los expertos (p. ej. jaguar vs. ocelote).</dd><dt>H₀ / H₁</dt><dd>H₀: el F1 macro es igual con fotos a color y en gris. H₁: es distinto.</dd><dt>Cómo se prueba</dt><dd>Experimento extra: mismas 850 fotos convertidas a gris en código, mismo pipeline, SVM reoptimizado para gris, mismos 100 folds. Wilcoxon pareado y t corregido, calculados también por separado para fotos a color e infrarrojas.</dd><dt>Resultado</dt><dd>Diferencia total de solo +0.008. Wilcoxon p = 0.02, pero t corregido p = 0.54 → <b>efecto mínimo y no robusto</b>. Matiz: en fotos diurnas el color ayuda (+0.026) y en las nocturnas estorba (−0.034). Lo principal es el patrón de manchas.</dd></dl></div>
+
+<h3>Diseño del experimento</h3>
+<div class="scroll"><table>
+<thead><tr><th>Elemento</th><th>En nuestro proyecto</th></tr></thead>
+<tbody>
+<tr><td>Unidad experimental</td><td>Cada fold de validación cruzada (100 folds: 10 particiones × 10 repeticiones)</td></tr>
+<tr><td>Variable independiente</td><td>H1: el modelo (SVM vs. Random Forest). H3: la entrada (fotos a color vs. en gris)</td></tr>
+<tr><td>Variable dependiente</td><td><b>F1 macro</b> (principal); además accuracy, precision, recall, F1 weighted, AUC macro y micro</td></tr>
+<tr><td>Variables controladas</td><td>Mismas fotos (dataset v2), mismos folds (semilla 42), mismo extractor (ResNet50 fija), mismo pipeline (<code>StandardScaler → modelo</code>), hiperparámetros optimizados para cada condición</td></tr>
+<tr><td>Datos</td><td>765 fotos de desarrollo para el CV; 85 de test apartadas y usadas una sola vez</td></tr>
+<tr><td>Prueba estadística</td><td>Wilcoxon pareado (no asume normalidad), α = 0.05; t-test corregido de Nadeau–Bengio por la dependencia entre folds; McNemar en test</td></tr>
+<tr><td>Criterio de decisión</td><td>Se rechaza H₀ si p &lt; 0.05. Una diferencia se considera <b>robusta</b> solo si también la sostiene el t corregido</td></tr>
+</tbody></table></div>
+
+<div class="box why"><h4>Hallazgo no planeado</h4>
+<p>No era una hipótesis previa: en el EDA descubrimos que el <b>32 % de las fotos son infrarrojas</b> (nocturnas). El t-SNE mostró que la ResNet50 separa primero día/noche y después la especie, y el SVM acierta 82.7 % de las fotos a color frente a 67.5 % de las infrarrojas. Es la principal limitación del modelo y explica el matiz de H3.</p></div>
+</section>
+<section class="card paso" id="mapa"><h2>Mapa de la notebook</h2>
 <p class="lead">La notebook <code>notebooks/clasificador_felideos.ipynb</code> sigue el diagrama de la pizarra y luego cubre lo que pide la rúbrica. Esta guía la recorre en el mismo orden.</p>
 <div class="scroll"><table>
 <thead><tr><th>Sección</th><th>Qué hace</th><th>Ítem rúbrica</th><th>Paso del diagrama</th></tr></thead>

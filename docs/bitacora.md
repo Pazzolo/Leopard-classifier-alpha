@@ -16,6 +16,22 @@ Registro cronológico de lo que se hizo en el proyecto: qué salió bien, qué s
 
 ---
 
+## 2026-11-17 — Hipótesis y diseño experimental
+
+**Hecho:** se agregó la sección *Hipótesis y diseño experimental* en:
+- la **notebook** (nueva §1.1 después de la introducción, más el veredicto de cada hipótesis en las conclusiones);
+- [explicacion-pipeline.html](explicacion-pipeline.html) y [estudio-codigo.html](estudio-codigo.html) (con botón "Hipótesis" en el menú);
+- [decisiones-plan-a.md](decisiones-plan-a.md) (§1b, con una diapositiva nueva en el esquema).
+
+**🧭 Contenido:**
+- **H1** SVM > RF: confirmada (Wilcoxon p ≈ 10⁻¹⁷, t corregido p ≈ 3 × 10⁻⁵).
+- **H2** transfer learning > píxeles: confirmada de forma visual (t-SNE).
+- **H3** el color ayuda: no se sostiene en total (+0.008, t corregido p = 0.54).
+- Diseño: unidad = fold, VI = modelo o color/gris, VD = F1 macro, controles, criterio α = 0.05 + robustez con t corregido.
+- Las fotos infrarrojas se presentan como **hallazgo no planeado**, no como hipótesis, para ser honestos sobre qué se planteó antes y qué se descubrió después.
+
+---
+
 ## 2026-11-17 — Relación con la rúbrica en los HTML de estudio
 
 **Hecho:** en [explicacion-pipeline.html](explicacion-pipeline.html) y [estudio-codigo.html](estudio-codigo.html) se agregó:

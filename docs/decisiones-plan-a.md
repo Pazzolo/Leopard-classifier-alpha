@@ -18,6 +18,24 @@ Al final hay un esquema de diapositivas sugerido.
 
 ---
 
+## 1b. Hipótesis y diseño experimental
+
+**Pregunta de investigación:** ¿se pueden distinguir 5 especies de félidos, varias con pelajes casi iguales, con ~850 fotos, combinando transfer learning y ML clásico? ¿Qué modelo lo hace mejor, y qué información visual usa?
+
+| | Hipótesis | Prueba | Resultado |
+| --- | --- | --- | --- |
+| **H1** | El SVM (RBF) supera al Random Forest en F1 macro | Mismos 100 folds, Wilcoxon + t corregido | ✅ Confirmada (p ≈ 10⁻¹⁷; t corr. p ≈ 3 × 10⁻⁵) |
+| **H2** | Los embeddings ResNet50 separan especies mejor que los píxeles | t-SNE (visual) | ✅ Confirmada (cualitativa) |
+| **H3** | Quitar el color baja el F1 macro | Mismas fotos en gris, mismos folds | ❌ No robusta (+0.008; t corr. p = 0.54) |
+
+**Diseño:** unidad experimental = fold (100); variable independiente = modelo (H1) o color/gris (H3); variable dependiente = F1 macro; controles = mismas fotos, mismos folds (semilla 42), mismo extractor y pipeline. Se rechaza H₀ si p < 0.05, y solo se considera robusto si también lo sostiene el t corregido.
+
+**Hallazgo no planeado:** 32 % de fotos infrarrojas; la red separa día/noche antes que especie.
+
+> **Mensaje clave:** tres hipótesis con su prueba: dos confirmadas (SVM > RF, transfer learning > píxeles) y una que no se sostiene (el color casi no importa).
+
+---
+
 ## 2. Elección del dataset: v2
 
 **Qué:** de las 4 exportaciones de Roboflow disponibles, se usa `classificador_felideos.v2i.multiclass`.
@@ -370,6 +388,7 @@ Estimación previa para **Colab gratuito** (2 núcleos de CPU + GPU T4). Son nú
 
 1. **Título:** clasificador de félidos neotropicales
 2. **Problema y motivación** → §1
+2b. **Hipótesis y diseño experimental** → §1b
 3. **Dataset:** por qué v2 + distribución de clases → §2
 4. **EDA:** grid de imágenes, balance → (resultados de la notebook)
 5. **Metodología general:** diagrama del pipeline completo → [diagrama-pipeline.html](diagrama-pipeline.html)

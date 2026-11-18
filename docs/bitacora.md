@@ -16,6 +16,14 @@ Registro cronológico de lo que se hizo en el proyecto: qué salió bien, qué s
 
 ---
 
+## 2026-11-17 — Guía de estudio del código
+
+**Hecho:** [estudio-codigo.html](estudio-codigo.html). Recorre la notebook en orden (12 secciones: mapa, configuración, carga, EDA, extracción, pipelines, optimización, comparación, test, t-SNE, color vs. gris, glosario) con fragmentos de código reales, qué hace cada línea importante, las decisiones, el resultado y preguntas de defensa desplegables con su respuesta.
+
+**✅ Bien:** cada línea de cada fragmento se verificó automáticamente contra la notebook. Todas coinciden; el único aviso fue un falso positivo por el escape de llaves.
+
+---
+
 ## 2026-11-17 — Versión HTML del pipeline paso a paso
 
 **Hecho:** [explicacion-pipeline.html](explicacion-pipeline.html), con el mismo estilo que el diagrama: el diagrama arriba, un menú de pasos fijo, una tarjeta por paso con cuadros "por qué" y "resultado", tablas y figuras embebidas. Modo claro/oscuro. Se mantiene la versión `.md` porque se ve directo en GitHub.

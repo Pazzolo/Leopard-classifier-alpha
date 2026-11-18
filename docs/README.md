@@ -10,6 +10,7 @@
 | [01-rubrica.md](01-rubrica.md) | Criterios de evaluación y fórmula de nota |
 | [plan-a.md](plan-a.md) | **Plan A:** transfer learning (ResNet50) + SVM vs. Random Forest sobre el dataset v2 |
 | [decisiones-plan-a.md](decisiones-plan-a.md) | Decisiones del Plan A explicadas (qué, por qué, alternativas): base para la presentación |
+| [estudio-codigo.html](estudio-codigo.html) | **Guía de estudio del código**: fragmentos reales de la notebook, explicación línea a línea, decisiones y preguntas de defensa |
 | [explicacion-pipeline.html](explicacion-pipeline.html) | **Cada paso del diagrama explicado** (qué, por qué, resultados y figuras), en el estilo del diagrama |
 | [explicacion-pipeline.md](explicacion-pipeline.md) | Lo mismo en Markdown (se ve directo en GitHub) |
 | [diagrama-pipeline.html](diagrama-pipeline.html) | Diagrama del pipeline (réplica de la pizarra de clase) para la presentación |

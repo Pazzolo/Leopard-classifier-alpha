@@ -16,6 +16,14 @@ Registro cronológico de lo que se hizo en el proyecto: qué salió bien, qué s
 
 ---
 
+## 2026-11-20 — PDFs de los documentos de estudio y de la notebook
+
+**Hecho:** PDF (A4, tema claro) de `estudio-codigo.html` (23 págs.), `diagrama-pipeline.html` (2), `explicacion-pipeline.html` (21) y de la notebook ejecutada `clasificador_felideos.ipynb` (41), en `docs/pdf/`. Los HTML se imprimieron con Chrome headless agregando CSS de impresión (sin menú fijo, preguntas de defensa desplegadas); la notebook pasó antes por `nbconvert --to html`.
+**✅ Bien:** las figuras y el diagrama SVG salen completos; todas las respuestas de defensa quedan visibles en papel.
+**❌ Mal / corregido:** la primera versión de `estudio-codigo.pdf` dejaba casi una página en blanco porque el CSS impedía partir la tabla de la rúbrica entre páginas; se dejó partir tablas y tarjetas largas y se regeneró.
+**🧭 Decisiones:** los PDF se versionan (~14 MB) para que el grupo pueda estudiar sin abrir los HTML; si cambian los HTML o la notebook hay que regenerarlos.
+**⏭️ Pendiente:** push a GitHub cuando el usuario lo pida.
+
 ## 2026-11-17 — Hipótesis y diseño experimental
 
 **Hecho:** se agregó la sección *Hipótesis y diseño experimental* en:
